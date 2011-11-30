@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+				android:layout_height = "fill_parent"
+				android:layout_width = "fill_parent" >
+				
+	<TextView android:id = "@+id/addSubjHead"
+			  android:textSize = "5mm"
+			  android:layout_above = "@+id/tAddSubj1"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "wrap_content"
+			  android:text = "Ein Fach hinzufügen" />
+			  
+	<TextView android:id = "@+id/tAddSubj1"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "wrap_content"
+			  android:text = "Name des Fachs:" />
+			  
+	<EditText android:id = "@+id/edtSubjectLong"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "wrap_content"
+			  android:background = "@android:drawable/editbox_background"
+			  android:layout_below = "@+id/tAddSubj1" />
+			  
+	<TextView android:id = "@+id/tAddSubj2"
+			  android:layout_width = "fill_parent"
+			  android:layout_marginTop = "2mm"
+			  android:layout_height = "wrap_content"
+			  android:layout_below = "@+id/edtSubjectLong"
+			  android:text = "Abkürzung:" />
+	
+	<EditText android:id = "@+id/edtSubjectShort"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "wrap_content"
+			  android:layout_below = "@+id/tAddSubj2"
+			  android:background = "@android:drawable/editbox_background" />
+			  
+	<TextView android:id = "@+id/tAddSubj3"
+			  android:layout_width = "wrap_content"
+			  android:layout_height = "wrap_content"
+			  android:layout_marginTop = "2mm"
+			  android:layout_below = "@+id/edtSubjectShort"
+			  android:text = "Kurstyp:" />	  
+			  
+	<Spinner android:id = "@+id/TypeSpinner"
+			 android:layout_width = "fill_parent"
+			 android:layout_height = "wrap_content"
+			 android:layout_below = "@+id/tAddSubj3"
+			 android:entries = "@array/SubjectTypes" />
+			  
+	<LinearLayout android:background = "#60000000" android:orientation = "horizontal"
+					  android:layout_height = "wrap_content"
+					  android:layout_width = "fill_parent"
+					  android:layout_alignParentBottom = "true">
+			<Button android:id = "@+id/btnAddSubjOK"
+					android:layout_width = "0dip"
+					android:layout_height = "wrap_content"
+					android:layout_weight = "1"
+					android:text = "Speichern" 
+					android:layout_marginTop = "5dip"/>
+			<Button android:id = "@+id/btnAddSubjCancel"
+					android:layout_width = "0dip"
+					android:layout_height = "wrap_content"
+					android:layout_weight = "1"
+					android:text = "Abbrechen"
+					android:layout_marginTop = "5dip" />
+		</LinearLayout>
+</RelativeLayout>

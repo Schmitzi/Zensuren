@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, SubjectPicker!</string>
+    <string name="app_name">Zensurenverwaltung</string>
+    <string-array name="SubjectTypes">
+    	<item>Grundkurs ohne Klausuren</item>
+    	<item>Grundkurs mit Klausuren</item>
+    	<item>Leistungskurs</item>
+    </string-array>
+</resources>

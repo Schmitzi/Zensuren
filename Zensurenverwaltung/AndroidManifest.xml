@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="apps.schmitzi.Zensurenverwaltung"
+      android:versionCode="10"
+      android:versionName="1.0.2">
+    <uses-sdk android:minSdkVersion="8" />
+
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false" android:theme = "@android:style/Theme.Light">
+        <activity android:name=".SubjectPicker"
+                  android:label="Zensurenverwaltung">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name = ".AddSubjectActivity"
+        		  android:label = "Ein neues Fach hinzufügen">
+        	<intent-filter>
+        		<action android:name = "apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT" />
+        		<category android:name = "android.intent.category.DEFAULT" />
+        	</intent-filter>
+        </activity>
+        <activity android:name = ".SubjectShower">
+        	<intent-filter>
+        		<action android:name = "apps.schmitzi.Zensurenverwaltung.SHOW_SUBJECT" />
+        		<category android:name = "android.intent.category.DEFAULT" />
+        		<data android:scheme = "content" />
+        	</intent-filter>
+        </activity>
+        <activity android:name = ".AddTestActivity">
+        	<intent-filter>
+        		<action android:name = "apps.schmitzi.Zensurenverwaltung.ADD_TEST" />
+        		<category android:name = "android.intent.category.DEFAULT" />
+        		<data android:scheme = "content" />
+        	</intent-filter>
+        </activity>
+		<activity android:name = ".NoSubjectsActivity" android:label = "Keine Fächer" />
+		<activity android:name = ".SubjectPickerLand" android:label = "Zensurenverwaltung">
+			<intent-filter>
+				<action android:name = "apps.schmitzi.Zensurenverwaltung.CHANGE_TO_LANDSCAPE" />
+				<category android:name = "android.intent.category.DEFAULT" />
+			</intent-filter>	
+		</activity>
+    </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+</manifest>

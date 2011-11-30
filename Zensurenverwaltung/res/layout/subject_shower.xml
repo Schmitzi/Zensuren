@@ -1,0 +1,41 @@
+<TableLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+		      android:layout_width="fill_parent"
+    		  android:layout_height="fill_parent"
+    		  android:gravity="bottom"
+    		  android:stretchColumns ="0">
+	
+	<TableRow >
+		<LinearLayout android:orientation = "vertical"
+					  android:layout_height = "wrap_content"
+					  android:layout_width = "fill_parent">
+			
+			<TextView android:id = "@+id/Mean1Text"
+					  android:layout_marginTop = "2mm"
+					  android:textSize = "2mm"
+					  android:text = "Durchschnitt:"
+					  android:layout_height = "wrap_content"
+					  android:layout_width = "fill_parent"
+					  android:gravity = "center" />
+					  
+			<TextView android:id = "@+id/Mean2Text"
+					  android:textSize = "4mm"
+					  android:layout_height = "wrap_content"
+					  android:layout_width = "fill_parent"
+					  android:gravity = "center" />
+					  
+			<View android:background = "#FF000000"
+				  android:layout_width = "fill_parent"
+				  android:layout_height = "2px" />					  	
+		</LinearLayout>
+	</TableRow>
+
+	<TableRow android:layout_weight = "1.0">
+		<ListView android:id = "@+id/lvMarks"
+				  android:dividerHeight = "1px"
+				  android:layout_height = "fill_parent"
+				  android:layout_width = "fill_parent"
+				  android:layout_weight = "1.0"
+				  android:textFilterEnabled = "true"
+				  android:clickable = "false" />
+ 	</TableRow>
+</TableLayout>
