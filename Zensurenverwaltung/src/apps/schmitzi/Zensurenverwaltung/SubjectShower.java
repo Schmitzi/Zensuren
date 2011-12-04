@@ -5,19 +5,25 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.TabActivity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,6 +32,7 @@ public class SubjectShower extends Activity {
 
 		private String subject;
 		SQLiteDatabase base;
+		TestAdapter adapter;
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -35,8 +42,15 @@ public class SubjectShower extends Activity {
 			setTitle(subject);
 		}
 		
-		private void intializeListView() {
-			Cursor c = base.rawQuery("SELECT * FROM " + subject.replace(" ", "_") + " ORDER BY date", null); 
+		private void initializeListView() {
+			TextView txtMean = (TextView) findViewById(R.id.Mean2Text);
+			base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+			Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = '"+ subject + "';", null);
+			c.moveToFirst();
+			if (! c.isNull(0))
+				txtMean.setText(Double.toString(((double) Math.round(c.getDouble(0) * 100))/100));
+			else txtMean.setText("keiner");
+			c = base.rawQuery("SELECT * FROM " + subject.replace(" ", "_") + " ORDER BY date", null); 
 			ArrayList<Test> items = new ArrayList<Test>();
 			ListView lv = (ListView) findViewById(R.id.lvMarks);
 			if (c.getCount() > 0)
@@ -46,7 +60,7 @@ public class SubjectShower extends Activity {
 					items.add(t);
 				}
 				Log.v("Zensurenverwaltung", Integer.toString(items.size()));
-				TestAdapter adapter = new TestAdapter(this, R.layout.test_item, items);
+				adapter = new TestAdapter(this, R.layout.test_item, items);
 				lv.setAdapter(adapter);
 				registerForContextMenu(lv);
 				
@@ -54,20 +68,13 @@ public class SubjectShower extends Activity {
 			} else {
 				lv.setAdapter(new ArrayAdapter<String>(this, R.layout.empty_list, new String[] {"Keine Zensuren vorhanden"}));
 			}
+			base.close();
 		}
 		@Override
 		public void onResume()
 		{
 			super.onResume();
-			TextView txtMean = (TextView) findViewById(R.id.Mean2Text);
-			base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
-			Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = '"+ subject + "';", null);
-			c.moveToFirst();
-			if (! c.isNull(0))
-				txtMean.setText(Double.toString(((double) Math.round(c.getDouble(0) * 100))/100));
-			else txtMean.setText("keiner");
-			intializeListView();
-			base.close();
+			initializeListView();;
 		}
 		
 		@Override
@@ -82,11 +89,6 @@ public class SubjectShower extends Activity {
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item){
 			Intent in;
-//			if (getParent() != null)
-	//		{
-		//		TabActivity tab = (TabActivity) getParent();
-			//	tab.getTabHost().setCurrentTab(0);
-			//}
 			switch(item.getItemId()){
 			case R.id.AddTestMenuBtn:
 				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_TEST",getIntent().getData());
@@ -109,6 +111,58 @@ public class SubjectShower extends Activity {
 				return false;
 			}
 		}
+		
+		@Override
+		public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo){
+			super.onCreateContextMenu(menu, v, menuInfo);
+			MenuInflater inflater = getMenuInflater();
+			if (v.getId() == R.id.lvMarks){
+				inflater.inflate(R.menu.marks_list, menu);
+				AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+			}
+		}
+		
+		public boolean onContextItemSelected(MenuItem item) {
+			final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+			switch (item.getItemId()) {
+			case R.id.deleteMark:
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage("Wollen Sie wirklich löschen?")
+					   .setCancelable(false)
+					   .setPositiveButton("Ja",new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+							ListView lv = (ListView) findViewById(R.id.lvMarks);
+							int position = lv.getPositionForView(info.targetView);
+							Cursor c = base.query(subject, new String[] {"rowid"}, null, null, null, null, null);
+							c.moveToPosition(position);
+							int id = c.getInt(0);
+							base.delete(subject.replace(' ', '_'), "rowid = ?", new String[] {String.valueOf(id)});
+							ContentValues values = new ContentValues();
+							values.put("mean", calculateMean());
+							base.update("subjects", values, "name = ?", new String[] {subject});
+							base.close();
+							initializeListView();
+							dialog.dismiss();
+						}
+					})
+					   .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+							
+						}
+					});
+				builder.show();
+				return true;
+			default:
+				return false;
+			}
+		}
+		
 		public class TestAdapter extends ArrayAdapter<Test>
 		{
 			public ArrayList<Test> items;
@@ -146,40 +200,40 @@ public class SubjectShower extends Activity {
 			}
 			
 		}
+		
+		Double calculateMean() {
+			Double mean;
+			Cursor c = base.query("subjects", new String[] {"type"}, "name = ?", new String[] {subject}, null, null, null);
+			c.moveToFirst();
+			int type = c.getInt(0);
+			c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
+			if (c.getCount() == 0) mean = null;
+			else {
+				c.moveToFirst();
+				Cursor d = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 0", null);
+				Cursor e = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 1", null);
+				d.moveToFirst(); e.moveToFirst();
+				double meanD = 0, meanE = 0;
+				try {
+					do {
+						meanD += d.getInt(0);
+					} while (d.moveToNext());
+					meanD = meanD / d.getCount() * 0.25 * (4 - type);
+				} catch (CursorIndexOutOfBoundsException ex) {
+					meanD = 0;
+				}
+				try {
+					do {
+						meanE += e.getInt(0);
+					} while (e.moveToNext());
+					meanE = meanE / e.getCount() * 0.25 * type;
+				} catch (CursorIndexOutOfBoundsException ex) {
+					meanE = 0;
+				}
+				if (d.getCount() == 0) meanD = meanE / type * (4 - type);
+				if (e.getCount() == 0) meanE = meanD * type / (4 - type);
+				mean = meanD + meanE;
+			}
+			return mean;
+		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

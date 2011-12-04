@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
@@ -27,7 +28,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 public class SubjectPicker extends Activity {
@@ -135,16 +135,36 @@ public class SubjectPicker extends Activity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.DeleteItem:
-			TextView t = (TextView) info.targetView.findViewById(R.id.SubjectText);
-			adapter.items.remove(t.getText().toString());
-			marksBase = this.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
-			marksBase.execSQL("DELETE FROM subjects WHERE name ='" + t.getText().toString() +"';");
-			marksBase.execSQL("DROP TABLE " + t.getText().toString().replace(" ", "_") +";");
-			marksBase.close();
-			initializeListView();
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Wollen Sie wirklich löschen?")
+				   .setCancelable(false)
+				   .setPositiveButton("Ja",new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						TextView t = (TextView) info.targetView.findViewById(R.id.SubjectText);
+						adapter.items.remove(t.getText().toString());
+						marksBase = openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
+						marksBase.execSQL("DELETE FROM subjects WHERE name ='" + t.getText().toString() +"';");
+						marksBase.execSQL("DROP TABLE " + t.getText().toString().replace(" ", "_") +";");
+						marksBase.close();
+						initializeListView();
+						dialog.dismiss();
+					}
+				})
+				   .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+						
+					}
+				});
+			AlertDialog alert = builder.create();
+			alert.show();
 			return true;
 		default:
 			return false;

@@ -51,35 +51,7 @@ public class AddTestActivity extends Activity {
 				base.execSQL("INSERT INTO " + subject.replace(" ", "_") + " ( date, mark, klausur ) "+
 							 "VALUES ( '" + date.toString() + "', " + Integer.toString(mark) + ", " + 
 							 Integer.toString(klausur) + " );");
-				double mean;
-				Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = ?;", new String[] {subject});
-				c.moveToFirst();
-				if (c.isNull(0)) mean = mark;
-				else {
-					Cursor d = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 0", null);
-					Cursor e = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 1", null);
-					d.moveToFirst(); e.moveToFirst();
-					double meanD = 0, meanE = 0;
-					try {
-						do {
-							meanD += d.getInt(0);
-						} while (d.moveToNext());
-						meanD = meanD / d.getCount() * 0.25 * (4 - type);
-					} catch (CursorIndexOutOfBoundsException ex) {
-						meanD = 0;
-					}
-					try {
-						do {
-							meanE += e.getInt(0);
-						} while (e.moveToNext());
-						meanE = meanE / e.getCount() * 0.25 * type;
-					} catch (CursorIndexOutOfBoundsException ex) {
-						meanE = 0;
-					}
-					if (d.getCount() == 0) meanD = meanE / type * (4 - type);
-					if (e.getCount() == 0) meanE = meanD * type / (4 - type);
-					mean = meanD + meanE;
-				}
+				double mean = calculateMean();
 				base.execSQL("UPDATE subjects SET mean = " + Double.toString(mean) + " WHERE name = '" + subject + "';");
 				base.close();
 				finish();
@@ -177,6 +149,39 @@ public class AddTestActivity extends Activity {
 			};
 			return new DatePickerDialog(this, callback, date.getYear() + 1900, date.getMonth(), date.getDate());
 		} else return null;
+	}
+
+	double calculateMean() {
+		double mean;
+		Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = ?;", new String[] {subject});
+		c.moveToFirst();
+		if (c.isNull(0)) mean = mark;
+		else {
+			Cursor d = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 0", null);
+			Cursor e = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 1", null);
+			d.moveToFirst(); e.moveToFirst();
+			double meanD = 0, meanE = 0;
+			try {
+				do {
+					meanD += d.getInt(0);
+				} while (d.moveToNext());
+				meanD = meanD / d.getCount() * 0.25 * (4 - type);
+			} catch (CursorIndexOutOfBoundsException ex) {
+				meanD = 0;
+			}
+			try {
+				do {
+					meanE += e.getInt(0);
+				} while (e.moveToNext());
+				meanE = meanE / e.getCount() * 0.25 * type;
+			} catch (CursorIndexOutOfBoundsException ex) {
+				meanE = 0;
+			}
+			if (d.getCount() == 0) meanD = meanE / type * (4 - type);
+			if (e.getCount() == 0) meanE = meanD * type / (4 - type);
+			mean = meanD + meanE;
+		}
+		return mean;
 	}
 }
 
