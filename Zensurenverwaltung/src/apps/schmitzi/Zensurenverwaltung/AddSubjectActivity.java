@@ -62,10 +62,9 @@ public class AddSubjectActivity extends Activity {
 				values.put("type", Integer.toString(spnType.getSelectedItemPosition()));
 				base.insert("subjects", null, values);
 				name = name.replace(" ", "_");
-				SubjectPicker.marksBase.execSQL("CREATE TABLE " + name + "(date DATE, mark SMALLINT, klausur BOOLEAN);");
-				SubjectPicker.marksBase.close();
-				setResult(RESULT_OK);
+				base.execSQL("CREATE TABLE " + name + "(date DATE, mark SMALLINT, klausur BOOLEAN);");
 				base.close();
+				setResult(RESULT_OK);
 				finish();
 			} else base.close();
 		} else {
