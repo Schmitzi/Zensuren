@@ -3,4 +3,7 @@
 	<item android:id = "@+id/AddSubjectMenuButton"
 		  android:title = "Neues Fach"
 		  android:icon = "@android:drawable/ic_menu_add" />
+	<item android:id = "@+id/PreferencesMenuButton"
+		  android:title = "Einstellungen"
+		  android:icon = "@android:drawable/ic_menu_preferences" />
 </menu>

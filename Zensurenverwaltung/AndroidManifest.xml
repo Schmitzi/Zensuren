@@ -41,5 +41,11 @@
 				<category android:name = "android.intent.category.DEFAULT" />
 			</intent-filter>	
 		</activity>
+		<activity android:name = ".PreferencesActivity" android:label = "Einstellungen">
+			<intent-filter>
+				<action android:name = "apps.schmitzi.Zensurenverwaltung.PREFERENCES" />
+				<category android:name = "android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
     </application>
 </manifest>

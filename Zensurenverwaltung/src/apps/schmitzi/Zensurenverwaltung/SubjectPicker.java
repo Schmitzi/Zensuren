@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -45,6 +46,10 @@ public class SubjectPicker extends Activity {
         marksBase.execSQL("CREATE TABLE IF NOT EXISTS subjects ( _id INTEGER AUTO_INCREMENT PRIMARY KEY," +
         				  "name varchar(100) NOT NULL, short varchar(10) NOT NULL, mean NUMERIC(4,2), type INTEGER );");
         marksBase.close();
+        SharedPreferences prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
+        if (!prefs.contains("Semester 1")){
+        	
+        }
     }
 	
     @Override
@@ -181,9 +186,15 @@ public class SubjectPicker extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
 		
+		Intent in;
 		switch(item.getItemId()) {
 			case R.id.AddSubjectMenuButton:
-				Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+				in.addCategory(Intent.CATEGORY_DEFAULT);
+				startActivity(in);
+				return true;
+			case R.id.PreferencesMenuButton:
+				in = new Intent("apps.schmitzi.Zensurenverwaltung.PREFERENCES");
 				in.addCategory(Intent.CATEGORY_DEFAULT);
 				startActivity(in);
 				return true;

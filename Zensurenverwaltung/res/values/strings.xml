@@ -24,4 +24,12 @@
     	<item>14</item>
     	<item>15</item>
     </string-array>
+    <string-array name = "Preferences">
+    	<item>Semester</item>
+    	<item>Design</item>
+    </string-array>
+    <string-array name = "PrefDescriptions">
+    	<item>Beginn der Semester ändern</item>
+    	<item>Design der Anwendung ändern</item>
+    </string-array>
 </resources>

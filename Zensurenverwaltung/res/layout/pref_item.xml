@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "fill_parent">
+
+	<TextView android:id = "@+id/PrefTitle"
+			  android:textSize  = "30dp"
+			  android:layout_alignParentLeft = "true"
+			  android:layout_alignParentTop = "true"
+			  android:layout_height = "wrap_content"
+			  android:layout_width = "fill_parent"
+			  android:layout_marginLeft = "9dp"
+			  android:layout_marginRight = "9dp"
+			  android:layout_marginTop = "3dp"
+			  android:layout_marginBottom = "3dp" />
+			 
+	<TextView android:id = "@+id/PrefDescription"
+			  android:textColor = "#1515FF"
+			  android:layout_alignRight = "@+id/PrefTitle"
+			  android:layout_alignParentBottom = "true"
+			  android:layout_below = "@+id/PrefTitle"
+			  android:layout_alignParentLeft = "true"
+			  android:layout_height = "wrap_content"
+			  android:layout_width = "fill_parent"
+			  android:layout_marginLeft = "9dp"
+			  android:layout_marginBottom = "3dp" />
+			  			  
+
+
+</RelativeLayout>
