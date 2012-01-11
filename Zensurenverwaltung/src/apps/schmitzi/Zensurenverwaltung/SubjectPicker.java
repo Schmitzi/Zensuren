@@ -59,7 +59,7 @@ public class SubjectPicker extends Activity {
 
 	private void initializeListView() {
 		marksBase = this.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
-        Cursor c  = marksBase.rawQuery("SELECT name, mean FROM subjects;", null);
+		Cursor c = marksBase.query("subjects", new String[] {"name, mean"}, null, null, null, null, null);
         TreeMap<String, Double> items = new TreeMap<String, Double>();
         if (c.getCount() > 0) {
         	c.moveToFirst();

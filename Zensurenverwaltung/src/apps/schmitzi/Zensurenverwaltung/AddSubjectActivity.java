@@ -2,7 +2,9 @@ package apps.schmitzi.Zensurenverwaltung;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +17,7 @@ public class AddSubjectActivity extends Activity {
 	Button btnCancel;
 	EditText edtLong;
 	EditText edtShort;
+	SQLiteDatabase base;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,19 +51,23 @@ public class AddSubjectActivity extends Activity {
 	public void onbtnOKClick(View v) {
 		if(!(edtLong.getText().toString().equals("")) && !(edtShort.getText().toString().equals("")) )
 		{
-			SubjectPicker.marksBase = this.openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE , null);
+			base = this.openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE , null);
 			String name = edtLong.getText().toString();
 			Spinner spnType = (Spinner) findViewById(R.id.TypeSpinner);
-			if (SubjectPicker.marksBase.rawQuery("SELECT _id FROM subjects WHERE name = '"+edtLong.getText().toString()+"';", null).getCount() == 0){
-				SubjectPicker.marksBase.execSQL("INSERT INTO subjects ( name, short, type )" +
-						"VALUES ( '" + name + "', '" + edtShort.getText().toString() + "', " +
-						Integer.toString(spnType.getSelectedItemPosition()) + " );" );
+			
+			if (base.query("subjects", new String[]{"_id"}, "name = ?", new String[]{name}, null, null, null).getCount() == 0){
+				ContentValues values = new ContentValues();
+				values.put("name", name);
+				values.put("short", edtShort.getText().toString());
+				values.put("type", Integer.toString(spnType.getSelectedItemPosition()));
+				base.insert("subjects", null, values);
 				name = name.replace(" ", "_");
 				SubjectPicker.marksBase.execSQL("CREATE TABLE " + name + "(date DATE, mark SMALLINT, klausur BOOLEAN);");
 				SubjectPicker.marksBase.close();
 				setResult(RESULT_OK);
+				base.close();
 				finish();
-			} else SubjectPicker.marksBase.close();
+			} else base.close();
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("Eines der beiden Felder wurde nicht ausgefüllt. Dies ist zwingend notwendig.");

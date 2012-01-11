@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,11 +17,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 
 public class AddTestActivity extends Activity {
 
-	int mark;
 	Date date;
+	int mark;
 	String subject;
 	int type;
 	SQLiteDatabase base;
@@ -30,14 +32,12 @@ public class AddTestActivity extends Activity {
 		setContentView(R.layout.add_test);
 		subject = getIntent().getData().getHost();
 		setTitle("Neue Zensur in " + subject);
-		mark = 0;
 		java.util.Date tempDate = new java.util.Date();
 		date = new Date( tempDate.getYear(), tempDate.getMonth(), tempDate.getDate());
 		initializebtnDate();
-		initializebtnMark();
 		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
 		final CheckBox chkKlausur = (CheckBox) findViewById(R.id.KlausurCheckBox);
-		Cursor c = base.rawQuery("SELECT type FROM subjects WHERE name = ?;", new String[]{subject});
+		Cursor c = base.query("subjects", new String[] {"type"}, "name = ?", new String[] {subject}, null, null, null);
 		c.moveToFirst();
 		type = c.getInt(0);
 		if (type == 0) chkKlausur.setEnabled(false);
@@ -45,14 +45,19 @@ public class AddTestActivity extends Activity {
 		btnOK.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
-				int klausur;
-				if(chkKlausur.isChecked()) klausur = 1;
-				else klausur = 0;
-				base.execSQL("INSERT INTO " + subject.replace(" ", "_") + " ( date, mark, klausur ) "+
-							 "VALUES ( '" + date.toString() + "', " + Integer.toString(mark) + ", " + 
-							 Integer.toString(klausur) + " );");
+				Spinner spnMark = (Spinner)findViewById(R.id.spnMark);
+				mark = spnMark.getSelectedItemPosition();
+				boolean klausur;
+				klausur = chkKlausur.isChecked();
+				ContentValues values = new ContentValues();
+				values.put("date", date.toString());
+				values.put("mark", mark);
+				values.put("klausur", klausur);
+				base.insert(subject.replace(' ', '_'), null, values);
 				double mean = calculateMean();
-				base.execSQL("UPDATE subjects SET mean = " + Double.toString(mean) + " WHERE name = '" + subject + "';");
+				ContentValues values2 = new ContentValues();
+				values2.put("mean", mean);
+				base.update("subjects", values2, "name = ?", new String[] {subject});
 				base.close();
 				finish();
 			}
@@ -66,39 +71,6 @@ public class AddTestActivity extends Activity {
 		});
 	}
 
-	private void initializebtnMark() {
-		final Button btnMark = (Button) findViewById(R.id.MarkButton);
-		btnMark.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				final Dialog dialog = new Dialog(AddTestActivity.this);
-				dialog.setContentView(R.layout.numpicker_dialog);
-				dialog.setTitle("Punkte");
-				final NumberPicker numPick = (NumberPicker) dialog.findViewById(R.id.NumPicker);
-				numPick.setRange(0, 15);
-				Button btnOK = (Button) dialog.findViewById(R.id.MarkOKButton);
-				btnOK.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick (View arg0){
-						mark = numPick.getCurrent();
-						btnMark.setText(Integer.toString(mark));
-						dialog.dismiss();
-					}
-				});
-				Button btnCancel = (Button) dialog.findViewById(R.id.MarkCancelButton);
-				btnCancel.setOnClickListener(new OnClickListener(){
-					@Override
-					public void onClick(View arg0){
-						dialog.dismiss();
-					}
-				});
-				dialog.setCancelable(false);
-				dialog.show();
-			}
-		});
-		
-		
-	}
 
 	private void initializebtnDate() {
 		Button btnDate = (Button) findViewById(R.id.DateButton);
@@ -153,12 +125,12 @@ public class AddTestActivity extends Activity {
 
 	double calculateMean() {
 		double mean;
-		Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = ?;", new String[] {subject});
+		Cursor c = base.query("subjects", new String[]{"mean"}, "name = ?", new String[]{subject}, null, null, null);
 		c.moveToFirst();
 		if (c.isNull(0)) mean = mark;
 		else {
-			Cursor d = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 0", null);
-			Cursor e = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 1", null);
+			Cursor d = base.query(subject.replace(' ', '_'), new String[] {"mark"}, "klausur = 0", null, null, null, null);
+			Cursor e = base.query(subject.replace(' ', '_'), new String[] {"mark"}, "klausur = 1", null, null, null, null);
 			d.moveToFirst(); e.moveToFirst();
 			double meanD = 0, meanE = 0;
 			try {

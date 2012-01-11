@@ -21,24 +21,25 @@
 						android:layout_below = "@+id/DateText"
 						android:gravity = "center_vertical" />
 		
-				<TextView android:layout_above = "@+id/MarkButton"
-						  android:layout_alignLeft = "@+id/MarkButton"
+				<TextView android:id = "@+id/MarkText"
+						  android:layout_below = "@+id/DateButton"
+						  android:layout_alignLeft = "@+id/spnMark"
 						  android:layout_width = "wrap_content"
 						  android:layout_height = "wrap_content"
 						  android:text = "Punkte:" />
 						  
-				<Button android:id = "@+id/MarkButton"
-						android:layout_width = "fill_parent"
-						android:layout_height = "wrap_content"
-						android:layout_marginBottom = "3mm"
-						android:layout_below = "@+id/DateButton"
-						android:gravity = "center_vertical"
-						android:text = "0" />
+				<Spinner android:id = "@+id/spnMark"
+						 android:entries = "@array/Zensuren"
+						 android:layout_below = "@+id/MarkText" 
+						 android:layout_width = "fill_parent"
+						 android:layout_height = "wrap_content"
+						 android:layout_marginBottom = "3mm"/>
+						 
 				<CheckBox android:id = "@+id/KlausurCheckBox"
 			  			  android:text = "Klausur"
 			  			  android:layout_width = "fill_parent"
 			 			  android:layout_height = "wrap_content"
-						  android:layout_below = "@+id/MarkButton" />
+						  android:layout_below = "@+id/spnMark" />
 			</RelativeLayout>
 		</ScrollView>
 		<LinearLayout android:background = "#60000000" android:orientation = "horizontal"

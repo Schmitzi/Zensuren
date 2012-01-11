@@ -4,6 +4,7 @@ import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class SubjectPickerLand extends TabActivity {
+	SQLiteDatabase base;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -41,8 +43,8 @@ public class SubjectPickerLand extends TabActivity {
 		Intent intent;
 		tabHost.setCurrentTab(0);
 		tabHost.clearAllTabs();
-		SubjectPicker.marksBase = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
-		Cursor c = SubjectPicker.marksBase.rawQuery("SELECT short, name FROM subjects ORDER BY short", null);
+		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+		Cursor c = base.query("subjects", new String[]{"short", "name"}, null, null, null, null, "short");
 		if (c.getCount() > 0){
 			c.moveToFirst();
 			do{
@@ -56,8 +58,7 @@ public class SubjectPickerLand extends TabActivity {
 			spec = tabHost.newTabSpec("").setIndicator("").setContent(intent);
 			tabHost.addTab(spec);
 		}
-		//tabHost.setCurrentTab(0);
-		SubjectPicker.marksBase.close();
+		base.close();
 	}
 
 	private View createTabView(Context context, String string) {

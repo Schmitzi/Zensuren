@@ -45,12 +45,12 @@ public class SubjectShower extends Activity {
 		private void initializeListView() {
 			TextView txtMean = (TextView) findViewById(R.id.Mean2Text);
 			base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
-			Cursor c = base.rawQuery("SELECT mean FROM subjects WHERE name = '"+ subject + "';", null);
+			Cursor c = base.query("subjects", new String[] {"mean"}, "name = ?", new String[]{subject}, null, null, null);
 			c.moveToFirst();
 			if (! c.isNull(0))
 				txtMean.setText(Double.toString(((double) Math.round(c.getDouble(0) * 100))/100));
 			else txtMean.setText("keiner");
-			c = base.rawQuery("SELECT * FROM " + subject.replace(" ", "_") + " ORDER BY date", null); 
+			c = base.query(subject.replace(' ', '_'), null, null, null, null, null, "date"); 
 			ArrayList<Test> items = new ArrayList<Test>();
 			ListView lv = (ListView) findViewById(R.id.lvMarks);
 			if (c.getCount() > 0)
@@ -101,10 +101,10 @@ public class SubjectShower extends Activity {
 				startActivity(in);
 				return true;
 			case R.id.DeleteMenuBtn:
-				SubjectPicker.marksBase = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
-				SubjectPicker.marksBase.execSQL("DROP TABLE " + subject.replace(" ", "_"));
-				SubjectPicker.marksBase.execSQL("DELETE FROM subjects WHERE name = '" + subject + "';");
-				SubjectPicker.marksBase.close();
+				base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+				base.execSQL("DROP TABLE " + subject.replace(" ", "_"));
+				base.execSQL("DELETE FROM subjects WHERE name = '" + subject + "';");
+				base.close();
 				finish();
 				return true;
 			default:
