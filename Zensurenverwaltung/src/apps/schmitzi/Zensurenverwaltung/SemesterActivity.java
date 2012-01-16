@@ -1,46 +1,33 @@
 package apps.schmitzi.Zensurenverwaltung;
 
-import android.app.Activity;
+import java.text.DateFormat;
+
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-public class PreferencesActivity extends ListActivity {
+public class SemesterActivity extends ListActivity {
+	
+	String[] semester = new String[4];
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		String[] prefs = getResources().getStringArray(R.array.Preferences);
-		String[] descriptions = getResources().getStringArray(R.array.PrefDescriptions);
-		setListAdapter(new PrefAdapter(this, R.layout.pref_item, prefs, descriptions));
-		ListView lv = getListView();
-		lv.setOnItemClickListener(new OnItemClickListener(){
-			
-
-			@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				switch(position){
-				case 0:
-					Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SEMESTER");
-					in.addCategory(Intent.CATEGORY_DEFAULT);
-					startActivity(in);
-				}
-			}
-		});
+		SharedPreferences prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
+		for (int i = 0; i < 4; i++){
+			semester[i] = prefs.getString("Semester " + String.valueOf(i + 1),
+					DateFormat.getDateInstance().format(new java.util.Date()));
+		}
+		this.setListAdapter(new PrefAdapter(this, R.layout.pref_item,
+							new String[] {"Semester 1", "Semester 2", "Semester 3", "Semester 4"}, semester));
 	}
-
-	
 	
 	public class PrefAdapter extends ArrayAdapter<String> {
 
@@ -73,4 +60,5 @@ public class PreferencesActivity extends ListActivity {
 		}
 
 	}
+
 }

@@ -4,7 +4,7 @@
 			  android:layout_height = "fill_parent">
 
 	<TextView android:id = "@+id/PrefTitle"
-			  android:textSize  = "30dp"
+			  android:textSize  = "28dp"
 			  android:layout_alignParentLeft = "true"
 			  android:layout_alignParentTop = "true"
 			  android:layout_height = "wrap_content"
@@ -16,6 +16,7 @@
 			 
 	<TextView android:id = "@+id/PrefDescription"
 			  android:textColor = "#1515FF"
+			  android:textSize = "16dp"
 			  android:layout_alignRight = "@+id/PrefTitle"
 			  android:layout_alignParentBottom = "true"
 			  android:layout_below = "@+id/PrefTitle"

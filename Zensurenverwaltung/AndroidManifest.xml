@@ -47,5 +47,11 @@
 				<category android:name = "android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<activity android:name = ".SemesterActivity" android:label = "Semester einstellen">
+			<intent-filter>
+				<action android:name = "apps.schmitzi.Zensurenverwaltung.SEMESTER" />
+				<category android:name = "android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
     </application>
 </manifest>
