@@ -37,10 +37,17 @@ public class SubjectPicker extends Activity {
 	public static SQLiteDatabase marksBase;
 	public static final String DATABASE = "Zensurenverwaltung_Data";
 	private SubjectAdapter adapter;
+	SharedPreferences prefs;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
+        if (!prefs.contains("Semester 1")){
+        	Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SEMESTER");
+        	in.addCategory(Intent.CATEGORY_DEFAULT);
+        	startActivity(in);
+        }
         setContentView(R.layout.main);
         marksBase = this.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
         marksBase.execSQL("CREATE TABLE IF NOT EXISTS subjects ( _id INTEGER AUTO_INCREMENT PRIMARY KEY," +

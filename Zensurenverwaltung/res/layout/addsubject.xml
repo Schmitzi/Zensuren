@@ -46,7 +46,7 @@
 			 android:layout_below = "@+id/tAddSubj3"
 			 android:entries = "@array/SubjectTypes" />
 			  
-	<LinearLayout android:background = "#60000000" android:orientation = "horizontal"
+	<LinearLayout android:background = "#999999" android:orientation = "horizontal"
 					  android:layout_height = "wrap_content"
 					  android:layout_width = "fill_parent"
 					  android:layout_alignParentBottom = "true">

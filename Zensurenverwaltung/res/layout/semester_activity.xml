@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+				android:layout_width = "fill_parent"
+				android:layout_height = "fill_parent">
+
+	<LinearLayout android:layout_alignParentBottom = "true"
+				  android:layout_width = "fill_parent"
+				  android:layout_height = "wrap_content"
+				  android:orientation = "horizontal"
+				  android:background = "#999999"
+				  android:id = "@+id/llSemester">
+				  
+		<Button android:id ="@+id/btnSemOK"
+			 	android:layout_height = "wrap_content"
+			 	android:layout_width = "0dp"
+			 	android:layout_weight = "0.5"
+			 	android:layout_marginTop = "3dp"
+			 	android:layout_marginRight = "3dp"
+			 	android:layout_marginBottom = "3dp"
+			 	android:layout_marginLeft = "3dp"
+			 	android:text = "Speichern" />
+		
+		<Button android:id = "@+id/btnSemCancel"
+				android:layout_width = "0dp"
+				android:layout_height = "wrap_content"
+				android:layout_weight = "0.5"
+				android:layout_marginTop = "3dp"
+				android:layout_marginBottom = "3dp"
+				android:layout_marginRight = "3dp"
+				android:text = "Abbrechen" />			  
+	
+	</LinearLayout>
+	
+	<ListView android:id = "@+id/lvSemester"
+			  android:layout_alignParentTop = "true"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "wrap_content"
+			  android:layout_above = "@+id/llSemester"
+			  android:textFilterEnabled = "true" />				
+
+</RelativeLayout>

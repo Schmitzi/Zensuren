@@ -10,13 +10,13 @@
 	          android:gravity = "left">
 		<TextView android:text = "Hallo"
 				  android:id = "@+id/DateText"
-			   	  android:textSize = "2.5mm"
+			   	  android:textSize = "23dp"
 				  android:layout_height = "fill_parent"
 				  android:layout_width = "wrap_content"
 			/>
 		<LinearLayout android:layout_gravity = "right" android:layout_weight = "1">
 			<TextView android:id = "@+id/MarkText"
-					  android:textSize = "3mm"
+					  android:textSize = "23dp"
 					  android:textStyle = "bold"
 					  android:layout_height = "fill_parent"
 					  android:layout_width = "wrap_content"

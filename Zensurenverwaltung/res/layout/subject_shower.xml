@@ -11,14 +11,14 @@
 			
 			<TextView android:id = "@+id/Mean1Text"
 					  android:layout_marginTop = "2mm"
-					  android:textSize = "2mm"
+					  android:textSize = "18dp"
 					  android:text = "Durchschnitt:"
 					  android:layout_height = "wrap_content"
 					  android:layout_width = "fill_parent"
 					  android:gravity = "center" />
 					  
 			<TextView android:id = "@+id/Mean2Text"
-					  android:textSize = "4mm"
+					  android:textSize = "35dp"
 					  android:layout_height = "wrap_content"
 					  android:layout_width = "fill_parent"
 					  android:gravity = "center" />

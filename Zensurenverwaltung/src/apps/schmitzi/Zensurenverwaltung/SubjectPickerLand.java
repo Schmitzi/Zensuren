@@ -21,6 +21,7 @@ public class SubjectPickerLand extends TabActivity {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
+		setTheme(android.R.style.Theme_Light);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_land);
 	//	initializeTabHost();

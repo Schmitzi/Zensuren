@@ -9,7 +9,7 @@
 	          android:layout_width = "wrap_content">
 		<TextView 
 				  android:id = "@+id/SubjectText"
-			   	  android:textSize = "2.5mm"
+			   	  android:textSize = "23dp"
 			   	  android:layout_gravity = "left"
 				  android:layout_height = "fill_parent"
 				  android:layout_width = "wrap_content"
@@ -18,7 +18,7 @@
 			<TextView android:id = "@+id/MeanText"
 					  android:layout_weight = "1"
 			          android:layout_gravity = "right"
-					  android:textSize = "2.5mm"
+					  android:textSize = "23dp"
 					  android:textStyle = "bold"
 					  android:layout_height = "fill_parent"
 					  android:layout_width = "wrap_content"
