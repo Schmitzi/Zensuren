@@ -33,6 +33,7 @@ public class SubjectShower extends Activity {
 		private String subject;
 		SQLiteDatabase base;
 		TestAdapter adapter;
+		final int MODE_ADD = 0, MODE_EDIT = 1;
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -98,6 +99,7 @@ public class SubjectShower extends Activity {
 			case R.id.MainLandAddSubject:
 				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
 				in.addCategory(Intent.CATEGORY_DEFAULT);
+				in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_ADD);
 				startActivity(in);
 				return true;
 			case R.id.DeleteMenuBtn:
@@ -106,6 +108,17 @@ public class SubjectShower extends Activity {
 				base.execSQL("DELETE FROM subjects WHERE name = '" + subject + "';");
 				base.close();
 				finish();
+				return true;
+			case R.id.PrefLandButton:
+				in = new Intent("apps.schmitzi.Zensurenverwaltung.PREFERENCES");
+				startActivity(in);
+				return true;
+			case R.id.EditMenuButton:
+				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+				in.addCategory(Intent.CATEGORY_DEFAULT);
+				in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
+				in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_EDIT);
+				startActivity(in);
 				return true;
 			default:
 				return false;

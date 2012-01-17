@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="apps.schmitzi.Zensurenverwaltung"
       android:versionCode="10"
-      android:versionName="1.0.2">
+      android:versionName="1.0">
     <uses-sdk android:minSdkVersion="8" />
 
     <application  android:label="Zensuren" android:debuggable="true" android:theme = "@android:style/Theme.Light">
@@ -35,7 +35,7 @@
         	</intent-filter>
         </activity>
 		<activity android:name = ".NoSubjectsActivity" android:label = "Keine Fächer" />
-		<activity android:name = ".SubjectPickerLand" android:label = "Zensurenverwaltung">
+		<activity android:name = ".SubjectPickerLand" android:label = "Zensuren">
 			<intent-filter>
 				<action android:name = "apps.schmitzi.Zensurenverwaltung.CHANGE_TO_LANDSCAPE" />
 				<category android:name = "android.intent.category.DEFAULT" />

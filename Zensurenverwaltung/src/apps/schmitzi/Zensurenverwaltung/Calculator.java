@@ -81,7 +81,7 @@ class Calculator {
 		case 1:
 			if (currentSemester < 2){
 				if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-				else if (numberOfTests == 0) semester[currentSemester] = (double) Klausuren;
+				else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
 				else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
 			} else {
 				semester[currentSemester] = (double) (Tests/numberOfTests);
@@ -90,7 +90,7 @@ class Calculator {
 		case 2:
 			if (currentSemester < 3){
 				if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-				else if (numberOfTests == 0) semester[currentSemester] = (double) Klausuren;
+				else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
 				else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
 			} else {
 				semester[currentSemester] = (double) (Tests/numberOfTests);

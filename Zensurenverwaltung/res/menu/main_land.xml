@@ -9,4 +9,10 @@
 	<item android:id = "@+id/DeleteMenuBtn"
 		  android:icon = "@android:drawable/ic_menu_delete"
 		  android:title = "Fach löschen" />
+	<item android:id ="@+id/EditMenuButton"
+		  android:icon = "@android:drawable/ic_menu_edit"
+		  android:title = "Fach bearbeiten" />
+	<item android:id = "@+id/PrefLandButton"
+		  android:icon = "@android:drawable/ic_menu_preferences"
+		  android:title = "Einstellungen" />
 </menu>
