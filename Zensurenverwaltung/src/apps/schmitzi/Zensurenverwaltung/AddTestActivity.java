@@ -54,7 +54,8 @@ public class AddTestActivity extends Activity {
 				values.put("mark", mark);
 				values.put("klausur", klausur);
 				base.insert(subject.replace(' ', '_'), null, values);
-				double mean = calculateMean();
+				Cursor c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
+				Double mean = new Calculator(c, type, getSharedPreferences("Zensuren", MODE_PRIVATE)).calculateMean();
 				ContentValues values2 = new ContentValues();
 				values2.put("mean", mean);
 				base.update("subjects", values2, "name = ?", new String[] {subject});
@@ -123,38 +124,6 @@ public class AddTestActivity extends Activity {
 		} else return null;
 	}
 
-	double calculateMean() {
-		double mean;
-		Cursor c = base.query("subjects", new String[]{"mean"}, "name = ?", new String[]{subject}, null, null, null);
-		c.moveToFirst();
-		if (c.isNull(0)) mean = mark;
-		else {
-			Cursor d = base.query(subject.replace(' ', '_'), new String[] {"mark"}, "klausur = 0", null, null, null, null);
-			Cursor e = base.query(subject.replace(' ', '_'), new String[] {"mark"}, "klausur = 1", null, null, null, null);
-			d.moveToFirst(); e.moveToFirst();
-			double meanD = 0, meanE = 0;
-			try {
-				do {
-					meanD += d.getInt(0);
-				} while (d.moveToNext());
-				meanD = meanD / d.getCount() * 0.25 * (4 - type);
-			} catch (CursorIndexOutOfBoundsException ex) {
-				meanD = 0;
-			}
-			try {
-				do {
-					meanE += e.getInt(0);
-				} while (e.moveToNext());
-				meanE = meanE / e.getCount() * 0.25 * type;
-			} catch (CursorIndexOutOfBoundsException ex) {
-				meanE = 0;
-			}
-			if (d.getCount() == 0) meanD = meanE / type * (4 - type);
-			if (e.getCount() == 0) meanE = meanD * type / (4 - type);
-			mean = meanD + meanE;
-		}
-		return mean;
-	}
 }
 
 

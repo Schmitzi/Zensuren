@@ -38,6 +38,7 @@ public class SubjectPicker extends Activity {
 	public static final String DATABASE = "Zensurenverwaltung_Data";
 	private SubjectAdapter adapter;
 	SharedPreferences prefs;
+	final int MODE_ADD = 0, MODE_EDIT = 1;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,6 +179,13 @@ public class SubjectPicker extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 			return true;
+		case R.id.editItem:
+			TextView t = (TextView) info.targetView.findViewById(R.id.SubjectText);
+			Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+			in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", t.getText().toString());
+			in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_EDIT);
+			startActivity(in);
+			return true;
 		default:
 			return false;
 		}
@@ -198,6 +206,7 @@ public class SubjectPicker extends Activity {
 			case R.id.AddSubjectMenuButton:
 				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
 				in.addCategory(Intent.CATEGORY_DEFAULT);
+				in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_ADD);
 				startActivity(in);
 				return true;
 			case R.id.PreferencesMenuButton:

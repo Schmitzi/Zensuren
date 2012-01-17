@@ -136,12 +136,17 @@ public class SubjectShower extends Activity {
 							base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
 							ListView lv = (ListView) findViewById(R.id.lvMarks);
 							int position = lv.getPositionForView(info.targetView);
-							Cursor c = base.query(subject, new String[] {"rowid"}, null, null, null, null, null);
+							Cursor c = base.query(subject.replace(' ', '_'), new String[] {"rowid"}, null, null, null, null, null);
 							c.moveToPosition(position);
 							int id = c.getInt(0);
 							base.delete(subject.replace(' ', '_'), "rowid = ?", new String[] {String.valueOf(id)});
 							ContentValues values = new ContentValues();
-							values.put("mean", calculateMean());
+							c= base.query("subjects", new String[]{"type"}, "name = ?", new String[]{subject}, null, null, null);
+							c.moveToFirst();
+							int type = c.getInt(0);
+							c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
+							Double mean = new Calculator(c, type, getSharedPreferences("Zensuren", MODE_PRIVATE)).calculateMean();
+							values.put("mean", mean);
 							base.update("subjects", values, "name = ?", new String[] {subject});
 							base.close();
 							initializeListView();
@@ -199,41 +204,5 @@ public class SubjectShower extends Activity {
 				return v;
 			}
 			
-		}
-		
-		Double calculateMean() {
-			Double mean;
-			Cursor c = base.query("subjects", new String[] {"type"}, "name = ?", new String[] {subject}, null, null, null);
-			c.moveToFirst();
-			int type = c.getInt(0);
-			c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
-			if (c.getCount() == 0) mean = null;
-			else {
-				c.moveToFirst();
-				Cursor d = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 0", null);
-				Cursor e = base.rawQuery("SELECT mark FROM " + subject.replace(" ", "_") + " WHERE klausur = 1", null);
-				d.moveToFirst(); e.moveToFirst();
-				double meanD = 0, meanE = 0;
-				try {
-					do {
-						meanD += d.getInt(0);
-					} while (d.moveToNext());
-					meanD = meanD / d.getCount() * 0.25 * (4 - type);
-				} catch (CursorIndexOutOfBoundsException ex) {
-					meanD = 0;
-				}
-				try {
-					do {
-						meanE += e.getInt(0);
-					} while (e.moveToNext());
-					meanE = meanE / e.getCount() * 0.25 * type;
-				} catch (CursorIndexOutOfBoundsException ex) {
-					meanE = 0;
-				}
-				if (d.getCount() == 0) meanD = meanE / type * (4 - type);
-				if (e.getCount() == 0) meanE = meanD * type / (4 - type);
-				mean = meanD + meanE;
-			}
-			return mean;
 		}
 }
