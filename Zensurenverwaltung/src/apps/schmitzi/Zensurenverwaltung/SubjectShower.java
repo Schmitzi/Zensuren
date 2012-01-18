@@ -157,7 +157,7 @@ public class SubjectShower extends Activity {
 							c= base.query("subjects", new String[]{"type"}, "name = ?", new String[]{subject}, null, null, null);
 							c.moveToFirst();
 							int type = c.getInt(0);
-							c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
+							c = base.query(subject.replace(' ', '_'), null, null, null, null, null, "date");
 							Double mean = new Calculator(c, type, getSharedPreferences("Zensuren", MODE_PRIVATE)).calculateMean();
 							values.put("mean", mean);
 							base.update("subjects", values, "name = ?", new String[] {subject});

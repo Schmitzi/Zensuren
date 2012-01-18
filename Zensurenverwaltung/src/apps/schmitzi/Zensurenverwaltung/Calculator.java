@@ -22,7 +22,7 @@ class Calculator {
 	public Double calculateMean(){
 		Double[] semester = new Double[4];
 		double result = 0;
-		int Klausuren = 0, Tests = 0;
+		double Klausuren = 0, Tests = 0;
 		int numberOfKlausuren = 0, numberOfTests = 0, currentSemester = 0;
 		if (marks.getCount() == 0 ) return null;
 		marks.moveToFirst();
@@ -31,78 +31,78 @@ class Calculator {
 			if(!date.before(semesterDates[currentSemester + 1])){
 				switch(type){
 				case 0:
-					semester[currentSemester] = (double) (Tests / numberOfTests);
+					semester[currentSemester] = Tests / numberOfTests;
 					Tests = 0; numberOfTests = 0; currentSemester++;
 					break;
 				case 1:
 					if (currentSemester < 2){
-						if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-						else if (numberOfTests == 0) semester[currentSemester] = (double) Klausuren;
-						else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
+						if (numberOfKlausuren == 0) semester[currentSemester] = (Tests/numberOfTests);
+						else if (numberOfTests == 0) semester[currentSemester] = Klausuren;
+						else semester[currentSemester] = Klausuren * 0.25 + (Tests / numberOfTests) * 0.75;
 					} else {
-						semester[currentSemester] = (double) (Tests/numberOfTests);
+						semester[currentSemester] = Tests/numberOfTests;
 					}
 					Tests = 0; numberOfTests = 0; Klausuren = 0; numberOfKlausuren = 0; currentSemester++;
 					break;
 				case 2:
 					if (currentSemester < 3){
-						if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-						else if (numberOfTests == 0) semester[currentSemester] = (double) Klausuren;
-						else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
+						if (numberOfKlausuren == 0) semester[currentSemester] = Tests/numberOfTests;
+						else if (numberOfTests == 0) semester[currentSemester] = Klausuren;
+						else semester[currentSemester] = Klausuren * 0.25 + (Tests / numberOfTests) * 0.75;
 					} else {
-						semester[currentSemester] = (double) (Tests/numberOfTests);
+						semester[currentSemester] = Tests/numberOfTests;
 					}
 					Tests = 0; numberOfTests = 0; Klausuren = 0; numberOfKlausuren = 0; currentSemester++;
 					break;
 				case 3:
 					if (currentSemester < 3){
-						if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-						else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
-						else semester[currentSemester] = (double) ((Klausuren/ numberOfKlausuren) * 0.5 + (Tests / numberOfTests) * 0.5);
+						if (numberOfKlausuren == 0) semester[currentSemester] = Tests/numberOfTests;
+						else if (numberOfTests == 0) semester[currentSemester] = Klausuren / numberOfKlausuren;
+						else semester[currentSemester] = (Klausuren/ numberOfKlausuren) * 0.5 + (Tests / numberOfTests) * 0.5;
 					} else {
-						semester[currentSemester] = (double) (Tests/numberOfTests);
+						semester[currentSemester] = Tests / numberOfTests;
 					}
 					Tests = 0; numberOfTests = 0; Klausuren = 0; numberOfKlausuren = 0; currentSemester++;
 					break;
 				}
 			}
 			if (marks.getInt(2) == 0){
-				Tests += marks.getInt(1);
+				Tests += marks.getDouble(1);
 				numberOfTests++;
 			} else {
-				Klausuren += marks.getInt(1);
+				Klausuren += marks.getDouble(1);
 				numberOfKlausuren++;
 			}
 		}while (marks.moveToNext());
 		switch(type){
 		case 0:
-			semester[currentSemester] = (double) (Tests / numberOfTests);
+			semester[currentSemester] = Tests / numberOfTests;
 			break;
 		case 1:
 			if (currentSemester < 2){
-				if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-				else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
-				else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
+				if (numberOfKlausuren == 0) semester[currentSemester] = Tests / numberOfTests;
+				else if (numberOfTests == 0) semester[currentSemester] = Klausuren / numberOfKlausuren;
+				else semester[currentSemester] = Klausuren * 0.25 + (Tests / numberOfTests) * 0.75;
 			} else {
-				semester[currentSemester] = (double) (Tests/numberOfTests);
+				semester[currentSemester] = Tests/numberOfTests;
 			}
 			break;
 		case 2:
 			if (currentSemester < 3){
-				if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-				else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
-				else semester[currentSemester] = (double) (Klausuren * 0.25 + (Tests / numberOfTests) * 0.75);
+				if (numberOfKlausuren == 0) semester[currentSemester] = Tests/numberOfTests;
+				else if (numberOfTests == 0) semester[currentSemester] = Klausuren / numberOfKlausuren;
+				else semester[currentSemester] = Klausuren * 0.25 + (Tests / numberOfTests) * 0.75;
 			} else {
-				semester[currentSemester] = (double) (Tests/numberOfTests);
+				semester[currentSemester] = Tests/numberOfTests;
 			}
 			break;
 		case 3:
 			if (currentSemester < 3){
-				if (numberOfKlausuren == 0) semester[currentSemester] = (double) (Tests/numberOfTests);
-				else if (numberOfTests == 0) semester[currentSemester] = (double) (Klausuren / numberOfKlausuren);
-				else semester[currentSemester] = (double) ((Klausuren/ numberOfKlausuren) * 0.5 + (Tests / numberOfTests) * 0.5);
+				if (numberOfKlausuren == 0) semester[currentSemester] = Tests/numberOfTests;
+				else if (numberOfTests == 0) semester[currentSemester] = Klausuren / numberOfKlausuren;
+				else semester[currentSemester] = (Klausuren/ numberOfKlausuren) * 0.5 + (Tests / numberOfTests) * 0.5;
 			} else {
-				semester[currentSemester] = (double) (Tests/numberOfTests);
+				semester[currentSemester] = Tests/numberOfTests;
 			}
 			break;
 		}

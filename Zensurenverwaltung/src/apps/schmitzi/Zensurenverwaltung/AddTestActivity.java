@@ -54,7 +54,7 @@ public class AddTestActivity extends Activity {
 				values.put("mark", mark);
 				values.put("klausur", klausur);
 				base.insert(subject.replace(' ', '_'), null, values);
-				Cursor c = base.query(subject.replace(' ', '_'), null, null, null, null, null, null);
+				Cursor c = base.query(subject.replace(' ', '_'), null, null, null, null, null, "date");
 				Double mean = new Calculator(c, type, getSharedPreferences("Zensuren", MODE_PRIVATE)).calculateMean();
 				ContentValues values2 = new ContentValues();
 				values2.put("mean", mean);
