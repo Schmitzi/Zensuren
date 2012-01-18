@@ -189,7 +189,6 @@ public class SubjectShower extends Activity {
 		
 		public class TestAdapter extends ArrayAdapter<Test>
 		{
-			int currentSemester = 1;
 			public ArrayList<Test> items;
 
 			public TestAdapter(Context context, int textViewResourceId, ArrayList<Test> items) {
@@ -201,28 +200,7 @@ public class SubjectShower extends Activity {
 			public View getView(int position, View convertView, ViewGroup parent)
 			{
 				View v = convertView;
-				if (position == 0){
-					if(v == null)
-					{
-						LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						v = inf.inflate(R.layout.divider, null);
-					}
-					TextView t = (TextView) v.findViewById(R.id.dividerText);
-					t.setText("Semester 1");
-					return v;
-				}
-				Date d = items.get(position - currentSemester).getDate();
-				if (currentSemester < 4 && !d.before(semester[currentSemester])){
-					if(v == null)
-					{
-						LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-						v = inf.inflate(R.layout.divider, null);
-					}
-					TextView t = (TextView) v.findViewById(R.id.dividerText);
-					currentSemester++;
-					t.setText("Semester " + String.valueOf(currentSemester));
-					return v;
-				}
+				Date d = items.get(position).getDate();
 				if(v == null)
 				{
 					LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -234,9 +212,9 @@ public class SubjectShower extends Activity {
 					if (t1 != null) t1.setText(s);
 					TextView t2 = (TextView) v.findViewById(R.id.MarkText);
 					if (t2 != null){
-						int mark = items.get(position - currentSemester).getMark();
+						int mark = items.get(position).getMark();
 						t2.setText(Integer.toString(mark));
-						if (items.get(position - currentSemester).getType()) v.setBackgroundResource(R.drawable.klausur);
+						if (items.get(position).getType()) v.setBackgroundResource(R.drawable.klausur);
 						else v.setBackgroundResource(0);
 					}
 				}
