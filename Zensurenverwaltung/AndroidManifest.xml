@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="apps.schmitzi.Zensurenverwaltung"
       android:versionCode="10"
-      android:versionName="1.0">
+      android:versionName="1.2">
     <uses-sdk android:minSdkVersion="8" />
 
-    <application  android:label="Zensuren" android:debuggable="true" android:theme = "@android:style/Theme.Light">
+    <application  android:label="Zensuren" android:debuggable="true" android:theme = "@android:style/Theme.Light" android:icon = "@drawable/icon">
         <activity android:name=".SubjectPicker"
                   android:label="Zensuren">
             <intent-filter>

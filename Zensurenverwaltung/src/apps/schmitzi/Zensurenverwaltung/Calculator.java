@@ -28,7 +28,7 @@ class Calculator {
 		marks.moveToFirst();
 		do{
 			Date date = Date.valueOf(marks.getString(0));
-			if(!date.before(semesterDates[currentSemester + 1])){
+			if(currentSemester < 3 && !date.before(semesterDates[currentSemester + 1])){
 				switch(type){
 				case 0:
 					semester[currentSemester] = Tests / numberOfTests;

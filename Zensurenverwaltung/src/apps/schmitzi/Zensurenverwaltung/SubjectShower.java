@@ -10,8 +10,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +34,7 @@ public class SubjectShower extends Activity {
 		SQLiteDatabase base;
 		TestAdapter adapter;
 		final int MODE_ADD = 0, MODE_EDIT = 1;
+		Date[] semester = new Date[4];
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -41,6 +42,11 @@ public class SubjectShower extends Activity {
 			Intent starter = getIntent();
 			subject = starter.getData().getHost();
 			setTitle(subject);
+			SharedPreferences prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
+			semester[0] = Date.valueOf(prefs.getString("Semester 1", ""));
+			semester[1] = Date.valueOf(prefs.getString("Semester 2", ""));
+			semester[2] = Date.valueOf(prefs.getString("Semester 3", ""));
+			semester[3] = Date.valueOf(prefs.getString("Semester 4", ""));
 		}
 		
 		private void initializeListView() {
@@ -183,6 +189,7 @@ public class SubjectShower extends Activity {
 		
 		public class TestAdapter extends ArrayAdapter<Test>
 		{
+			int currentSemester = 1;
 			public ArrayList<Test> items;
 
 			public TestAdapter(Context context, int textViewResourceId, ArrayList<Test> items) {
@@ -194,21 +201,42 @@ public class SubjectShower extends Activity {
 			public View getView(int position, View convertView, ViewGroup parent)
 			{
 				View v = convertView;
+				if (position == 0){
+					if(v == null)
+					{
+						LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						v = inf.inflate(R.layout.divider, null);
+					}
+					TextView t = (TextView) v.findViewById(R.id.dividerText);
+					t.setText("Semester 1");
+					return v;
+				}
+				Date d = items.get(position - currentSemester).getDate();
+				if (currentSemester < 4 && !d.before(semester[currentSemester])){
+					if(v == null)
+					{
+						LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						v = inf.inflate(R.layout.divider, null);
+					}
+					TextView t = (TextView) v.findViewById(R.id.dividerText);
+					currentSemester++;
+					t.setText("Semester " + String.valueOf(currentSemester));
+					return v;
+				}
 				if(v == null)
 				{
 					LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 					v = inf.inflate(R.layout.test_item, null);
 				}
-				Date d = items.get(position).getDate();
 				String s = DateFormat.getDateInstance().format(d);
 				if (s!= null){
 					TextView t1 = (TextView) v.findViewById(R.id.DateText);
 					if (t1 != null) t1.setText(s);
 					TextView t2 = (TextView) v.findViewById(R.id.MarkText);
 					if (t2 != null){
-						int mark = items.get(position).getMark();
+						int mark = items.get(position - currentSemester).getMark();
 						t2.setText(Integer.toString(mark));
-						if (items.get(position).getType()) v.setBackgroundResource(R.drawable.klausur);
+						if (items.get(position - currentSemester).getType()) v.setBackgroundResource(R.drawable.klausur);
 						else v.setBackgroundResource(0);
 					}
 				}
