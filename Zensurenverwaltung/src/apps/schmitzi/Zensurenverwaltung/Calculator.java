@@ -19,6 +19,13 @@ class Calculator {
 		}
 	}
 	
+	public Calculator(Cursor c, int type, Date[] semester){
+		super();
+		marks =c;
+		this.type = type;
+		semesterDates = semester;
+	}
+	
 	public Double calculateMean(){
 		Double[] semester = new Double[4];
 		double result = 0;

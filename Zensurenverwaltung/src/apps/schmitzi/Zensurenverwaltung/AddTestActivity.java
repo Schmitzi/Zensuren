@@ -43,7 +43,6 @@ public class AddTestActivity extends Activity {
 		if (type == 0) chkKlausur.setEnabled(false);
 		Button btnOK = (Button) findViewById(R.id.AddTestButton);
 		btnOK.setOnClickListener(new OnClickListener(){
-			@Override
 			public void onClick(View v){
 				Spinner spnMark = (Spinner)findViewById(R.id.spnMark);
 				mark = spnMark.getSelectedItemPosition();
@@ -65,7 +64,6 @@ public class AddTestActivity extends Activity {
 		});
 		Button btnCancel = (Button) findViewById(R.id.CancelTestButton);
 		btnCancel.setOnClickListener(new OnClickListener(){
-			@Override
 			public void onClick(View v){
 				finish();
 			}
@@ -101,7 +99,6 @@ public class AddTestActivity extends Activity {
 		}
 		btnDate.setText(dayOfWeek + ", " + DateFormat.getDateInstance().format(date));
 		btnDate.setOnClickListener(new OnClickListener(){
-			@Override
 			public void onClick(View v){
 				showDialog(0);
 			}
@@ -112,7 +109,7 @@ public class AddTestActivity extends Activity {
 	public Dialog onCreateDialog(int id){
 		if (id == 0){
 			OnDateSetListener callback = new OnDateSetListener() {
-				@Override
+
 				public void onDateSet(DatePicker view, int year, int month, int day) {
 					date.setYear(year - 1900);
 					date.setMonth(month);

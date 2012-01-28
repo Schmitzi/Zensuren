@@ -51,7 +51,6 @@ public class AddSubjectActivity extends Activity {
 	}
 	public class btnOKListener implements OnClickListener {
 
-		@Override
 		public void onClick(View v) {
 			onbtnOKClick(v);
 			
@@ -60,7 +59,6 @@ public class AddSubjectActivity extends Activity {
 	}
 	public class btnCancelListener implements OnClickListener {
 
-		@Override
 		public void onClick(View v) {
 			onbtnCancelClick(v);
 			

@@ -23,6 +23,9 @@ public class Test {
 	
 	public Test(){
 		super();
+		mark = 16;
+		date = new Date(0);
+		type = false;
 	}
 	
 	public Test (Cursor c, int position){

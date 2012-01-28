@@ -47,7 +47,6 @@ public class SemesterActivity extends Activity {
 							new String[] {"Semester 1", "Semester 2", "Semester 3", "Semester 4"}, semester));
 		lv.setOnItemClickListener(new OnItemClickListener(){
 
-			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				showDialog(position);
@@ -59,7 +58,6 @@ public class SemesterActivity extends Activity {
 		if (prefs.contains("Semester 1")){
 			btnCancel.setOnClickListener(new OnClickListener(){
 
-				@Override
 				public void onClick(View v) {
 					finish();
 
@@ -88,7 +86,6 @@ public class SemesterActivity extends Activity {
 	public Dialog onCreateDialog(final int id){
 		OnDateSetListener callback = new OnDateSetListener(){
 
-			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
 				semester[id] = DateFormat.getDateInstance().format(new Date(year - 1900, monthOfYear, dayOfMonth));

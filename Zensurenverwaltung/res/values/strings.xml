@@ -27,8 +27,10 @@
     </string-array>
     <string-array name = "Preferences">
     	<item>Semester</item>
+    	<item>Zeitraum</item>
     </string-array>
     <string-array name = "PrefDescriptions">
     	<item>Beginn der Semester ändern</item>
+    	<item>Den angezeigten Zeitraum ändern (berechnet alle Durchschnitte neu)</item>
     </string-array>
 </resources>

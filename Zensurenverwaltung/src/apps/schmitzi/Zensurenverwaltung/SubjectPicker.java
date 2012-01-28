@@ -88,7 +88,6 @@ public class SubjectPicker extends Activity {
         	registerForContextMenu(lv);
         	lv.setOnItemClickListener(new OnItemClickListener() {
 
-				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					String subject = ((TextView) arg1.findViewById(R.id.SubjectText)).getText().toString();
@@ -155,8 +154,7 @@ public class SubjectPicker extends Activity {
 			builder.setMessage("Wollen Sie wirklich löschen?")
 				   .setCancelable(false)
 				   .setPositiveButton("Ja",new DialogInterface.OnClickListener() {
-					
-					@Override
+
 					public void onClick(DialogInterface dialog, int which) {
 						TextView t = (TextView) info.targetView.findViewById(R.id.SubjectText);
 						adapter.items.remove(t.getText().toString());
@@ -169,8 +167,7 @@ public class SubjectPicker extends Activity {
 					}
 				})
 				   .setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-					
-					@Override
+		
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
 						
