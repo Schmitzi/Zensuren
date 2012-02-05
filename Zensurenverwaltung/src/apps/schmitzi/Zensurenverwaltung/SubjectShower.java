@@ -37,13 +37,14 @@ public class SubjectShower extends Activity {
 	final int MODE_ADD = 0, MODE_EDIT = 1;
 	Date[] semester = new Date[5];
 	SharedPreferences prefs;
+	int current;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.subject_shower);
 		Intent starter = getIntent();
-		subject = starter.getData().getHost();
+		subject = starter.getStringExtra("apps.schmitzi.Zensurenverwaltung.subject");
 		setTitle(subject);
 		prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
 		semester[0] = Date.valueOf(prefs.getString("Semester 1", ""));
@@ -55,26 +56,21 @@ public class SubjectShower extends Activity {
 
 	private void initializeListView() {
 		TextView txtMean = (TextView) findViewById(R.id.Mean2Text);
-		base = openOrCreateDatabase(SubjectPicker.DATABASE,
-				MODE_PRIVATE, null);
-		Cursor c = base.query("subjects",
-				new String[] { "mean" }, "name = ?",
+		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+		Cursor c = base.query("subjects", new String[] { "mean" }, "name = ?",
 				new String[] { subject }, null, null, null);
 		c.moveToFirst();
 		if (!c.isNull(0))
 			txtMean.setText(Double.toString(((double) Math.round(c.getDouble(0) * 100)) / 100));
 		else
 			txtMean.setText("keiner");
-		if (prefs.getInt("ViewMode", 0) == 1){
+		if (prefs.getInt("ViewMode", 0) == 1) {
 			Date now = new Date(
-					new GregorianCalendar()
-							.get(GregorianCalendar.YEAR) - 1900,
-					new GregorianCalendar()
-							.get(GregorianCalendar.MONTH),
-					new GregorianCalendar()
-							.get(GregorianCalendar.DAY_OF_MONTH));
+					new GregorianCalendar().get(GregorianCalendar.YEAR) - 1900,
+					new GregorianCalendar().get(GregorianCalendar.MONTH),
+					new GregorianCalendar().get(GregorianCalendar.DAY_OF_MONTH));
 			Log.v("Zensuren", now.toLocaleString());
-			int current = 0;
+			current = 0;
 			if (now.before(semester[1]))
 				current = 0;
 			else if (now.before(semester[2]))
@@ -83,10 +79,14 @@ public class SubjectShower extends Activity {
 				current = 2;
 			else
 				current = 3;
-			c = base.query(subject.replace(' ', '_'), null, "(date >= ?) AND (date < ?)",
-					new String[]{semester[current].toString(), semester[current + 1].toString()}, null, null, "date");
-		}
-		else c = base.query(subject.replace(' ', '_'), null, null, null, null, null, "date");
+			c = base.query(subject.replace(' ', '_'), null,
+					"(date >= ?) AND (date < ?)",
+					new String[] { semester[current].toString(),
+							semester[current + 1].toString() }, null, null,
+					"date");
+		} else
+			c = base.query(subject.replace(' ', '_'), null, null, null, null,
+					null, "date");
 		ArrayList<Test> items = new ArrayList<Test>();
 		ListView lv = (ListView) findViewById(R.id.lvMarks);
 		if (c.getCount() > 0) {
@@ -94,15 +94,12 @@ public class SubjectShower extends Activity {
 				Test t = new Test(c, i);
 				items.add(t);
 			}
-			adapter = new TestAdapter(this,
-					R.layout.test_item, items);
+			adapter = new TestAdapter(this, R.layout.test_item, items);
 			lv.setAdapter(adapter);
 			registerForContextMenu(lv);
 
 		} else {
-			lv.setAdapter(new ArrayAdapter<String>(
-					this,
-					R.layout.empty_list,
+			lv.setAdapter(new ArrayAdapter<String>(this, R.layout.empty_list,
 					new String[] { "Keine Zensuren vorhanden" }));
 		}
 		base.close();
@@ -130,9 +127,9 @@ public class SubjectShower extends Activity {
 		Intent in;
 		switch (item.getItemId()) {
 		case R.id.AddTestMenuBtn:
-			in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_TEST",
-					getIntent().getData());
-			Log.v("Zensurenverwaltung", Boolean.toString(base.isOpen()));
+			in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_TEST");
+			in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
+			in.putExtra("apps.schmitzi.Zensurenverwaltung.semester", current);
 			startActivity(in);
 			return true;
 		case R.id.MainLandAddSubject:
@@ -191,42 +188,7 @@ public class SubjectShower extends Activity {
 
 								public void onClick(DialogInterface dialog,
 										int which) {
-									base = openOrCreateDatabase(
-											SubjectPicker.DATABASE,
-											MODE_PRIVATE, null);
-									ListView lv = (ListView) findViewById(R.id.lvMarks);
-									int position = lv
-											.getPositionForView(info.targetView);
-									Cursor c = base.query(
-											subject.replace(' ', '_'),
-											new String[] { "rowid" }, null,
-											null, null, null, null);
-									c.moveToPosition(position);
-									int id = c.getInt(0);
-									base.delete(subject.replace(' ', '_'),
-											"rowid = ?",
-											new String[] { String.valueOf(id) });
-									ContentValues values = new ContentValues();
-									c = base.query("subjects",
-											new String[] { "type" },
-											"name = ?",
-											new String[] { subject }, null,
-											null, null);
-									c.moveToFirst();
-									int type = c.getInt(0);
-									c = base.query(subject.replace(' ', '_'),
-											null, null, null, null, null,
-											"date");
-									Double mean = new Calculator(c, type,
-											getSharedPreferences("Zensuren",
-													MODE_PRIVATE))
-											.calculateMean();
-									values.put("mean", mean);
-									base.update("subjects", values, "name = ?",
-											new String[] { subject });
-									base.close();
-									initializeListView();
-									dialog.dismiss();
+									dialog_delete(info, dialog);
 								}
 							})
 					.setNegativeButton("Nein",
@@ -243,6 +205,40 @@ public class SubjectShower extends Activity {
 		default:
 			return false;
 		}
+	}
+
+	private void dialog_delete(final AdapterContextMenuInfo info,
+			DialogInterface dialog) {
+		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
+		ListView lv = (ListView) findViewById(R.id.lvMarks);
+		int position = lv.getPositionForView(info.targetView);
+		Cursor c = base.query(subject.replace(' ', '_'),
+				new String[] { "rowid" }, null, null, null, null, null);
+		c.moveToPosition(position);
+		int id = c.getInt(0);
+		base.delete(subject.replace(' ', '_'), "rowid = ?",
+				new String[] { String.valueOf(id) });
+		ContentValues values = new ContentValues();
+		c = base.query("subjects", new String[] { "type" }, "name = ?",
+				new String[] { subject }, null, null, null);
+		c.moveToFirst();
+		int type = c.getInt(0);
+		if (prefs.getInt("ViewMode", 0) == 1)
+			c = base.query(subject.replace(' ', '_'), null,
+					"(date >= ?) AND (date < ?)",
+					new String[] { semester[current].toString(),
+							semester[current + 1].toString() }, null, null,
+					"date");
+		else
+			c = base.query(subject.replace(' ', '_'), null, null, null, null,
+					null, "date");
+		Double mean = new Calculator(c, type, getSharedPreferences("Zensuren",
+				MODE_PRIVATE)).calculateMean();
+		values.put("mean", mean);
+		base.update("subjects", values, "name = ?", new String[] { subject });
+		base.close();
+		initializeListView();
+		dialog.dismiss();
 	}
 
 	public class TestAdapter extends ArrayAdapter<Test> {

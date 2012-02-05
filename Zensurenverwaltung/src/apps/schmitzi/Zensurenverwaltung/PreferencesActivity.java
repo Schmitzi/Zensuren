@@ -80,7 +80,7 @@ public class PreferencesActivity extends ListActivity {
 	protected Dialog onCreateDialog(int id){
 		switch(id){
 		case 0:
-			return ProgressDialog.show(this, "", "Update der Datenbank. Bitte warten...");
+			return ProgressDialog.show(this, "Update der Datenbank", "Bitte warten...");
 		default:
 			return null;
 		}

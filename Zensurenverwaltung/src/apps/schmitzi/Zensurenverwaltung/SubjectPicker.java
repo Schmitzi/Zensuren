@@ -91,7 +91,9 @@ public class SubjectPicker extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					String subject = ((TextView) arg1.findViewById(R.id.SubjectText)).getText().toString();
-					startActivity(new Intent("apps.schmitzi.Zensurenverwaltung.SHOW_SUBJECT", Uri.parse("content://" + subject)));
+					Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SHOW_SUBJECT");
+					in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
+					startActivity(in);
 				}
         	});
         } else {
