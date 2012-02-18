@@ -34,24 +34,29 @@ public class SubjectShower extends Activity {
 	private String subject;
 	SQLiteDatabase base;
 	TestAdapter adapter;
-	final int MODE_ADD = 0, MODE_EDIT = 1;
+	final int MODE_ADD = 0, MODE_EDIT = 1, ALL_SEMESTERS = 2, ONE_SEMESTER = 3;
 	Date[] semester = new Date[5];
-	SharedPreferences prefs;
-	int current;
+	int current, viewMode;
+	ArrayList<Test> items;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.subject_shower);
 		Intent starter = getIntent();
-		subject = starter.getStringExtra("apps.schmitzi.Zensurenverwaltung.subject");
+		subject = starter
+				.getStringExtra("apps.schmitzi.Zensurenverwaltung.subject");
 		setTitle(subject);
-		prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
 		semester[0] = Date.valueOf(prefs.getString("Semester 1", ""));
 		semester[1] = Date.valueOf(prefs.getString("Semester 2", ""));
 		semester[2] = Date.valueOf(prefs.getString("Semester 3", ""));
 		semester[3] = Date.valueOf(prefs.getString("Semester 4", ""));
-		semester[4] = new Date(3000, 0, 0);
+		semester[4] = new Date(3000, 1, 1);
+		if (prefs.getInt("ViewMode", 0) == 1)
+			viewMode = ONE_SEMESTER;
+		else
+			viewMode = ALL_SEMESTERS;
 	}
 
 	private void initializeListView() {
@@ -64,7 +69,7 @@ public class SubjectShower extends Activity {
 			txtMean.setText(Double.toString(((double) Math.round(c.getDouble(0) * 100)) / 100));
 		else
 			txtMean.setText("keiner");
-		if (prefs.getInt("ViewMode", 0) == 1) {
+		if (viewMode == ONE_SEMESTER) {
 			Date now = new Date(
 					new GregorianCalendar().get(GregorianCalendar.YEAR) - 1900,
 					new GregorianCalendar().get(GregorianCalendar.MONTH),
@@ -79,20 +84,37 @@ public class SubjectShower extends Activity {
 				current = 2;
 			else
 				current = 3;
-			c = base.query(subject.replace(' ', '_'), null,
-					"(date >= ?) AND (date < ?)",
+			c = base.query(subject.replace(' ', '_'), new String[] { "date",
+					"mark", "klausur", "rowid" }, "(date >= ?) AND (date < ?)",
 					new String[] { semester[current].toString(),
 							semester[current + 1].toString() }, null, null,
 					"date");
 		} else
-			c = base.query(subject.replace(' ', '_'), null, null, null, null,
-					null, "date");
-		ArrayList<Test> items = new ArrayList<Test>();
+			c = base.query(subject.replace(' ', '_'), new String[] { "date",
+					"mark", "klausur", "rowid" }, null, null, null, null,
+					"date");
+		items = new ArrayList<Test>();
 		ListView lv = (ListView) findViewById(R.id.lvMarks);
 		if (c.getCount() > 0) {
 			for (int i = 0; i < c.getCount(); i++) {
 				Test t = new Test(c, i);
 				items.add(t);
+			}
+			if (viewMode == ALL_SEMESTERS) {
+				Test t = new Test();
+				t.setMark(16);
+				t.setId(-1);
+				items.add(0, t);
+				int now = 1;
+				for (int i = 1; i < items.size(); i++) {
+					if (!items.get(i).getDate().before(semester[now])) {
+						Test temp = new Test();
+						temp.setMark(16 + now);
+						temp.setId(-1);
+						now++;
+						items.add(i, temp);
+					}
+				}
 			}
 			adapter = new TestAdapter(this, R.layout.test_item, items);
 			lv.setAdapter(adapter);
@@ -109,7 +131,6 @@ public class SubjectShower extends Activity {
 	public void onResume() {
 		super.onResume();
 		initializeListView();
-		;
 	}
 
 	@Override
@@ -170,8 +191,15 @@ public class SubjectShower extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		if (v.getId() == R.id.lvMarks) {
-			inflater.inflate(R.menu.marks_list, menu);
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+			ListView lv = (ListView) v;
+			AdapterContextMenuInfo inf = (AdapterContextMenuInfo) menuInfo;
+			Test t = items.get(lv.getPositionForView(inf.targetView));
+			Log.v("Zensuren", String.valueOf(t.getId()));
+			Log.v("Zensuren", String.valueOf(t.getMark()));
+			if (items.get(lv.getPositionForView(inf.targetView)).getId() != -1) {
+				inflater.inflate(R.menu.marks_list, menu);
+			} else
+				menu.close();
 		}
 	}
 
@@ -212,18 +240,15 @@ public class SubjectShower extends Activity {
 		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
 		ListView lv = (ListView) findViewById(R.id.lvMarks);
 		int position = lv.getPositionForView(info.targetView);
-		Cursor c = base.query(subject.replace(' ', '_'),
-				new String[] { "rowid" }, null, null, null, null, null);
-		c.moveToPosition(position);
-		int id = c.getInt(0);
+		int id = items.get(position).getId();
 		base.delete(subject.replace(' ', '_'), "rowid = ?",
 				new String[] { String.valueOf(id) });
 		ContentValues values = new ContentValues();
-		c = base.query("subjects", new String[] { "type" }, "name = ?",
+		Cursor c = base.query("subjects", new String[] { "type" }, "name = ?",
 				new String[] { subject }, null, null, null);
 		c.moveToFirst();
 		int type = c.getInt(0);
-		if (prefs.getInt("ViewMode", 0) == 1)
+		if (viewMode == ONE_SEMESTER)
 			c = base.query(subject.replace(' ', '_'), null,
 					"(date >= ?) AND (date < ?)",
 					new String[] { semester[current].toString(),
@@ -253,29 +278,34 @@ public class SubjectShower extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
-			Date d = items.get(position).getDate();
-			if (v == null) {
+			Test current = items.get(position);
+			Date d = current.getDate();
+			int mark = current.getMark();
+			int id = current.getId();
+			if (id >= 0) {
 				LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = inf.inflate(R.layout.test_item, null);
-			}
-			String s = DateFormat.getDateInstance().format(d);
-			if (s != null) {
-				TextView t1 = (TextView) v.findViewById(R.id.DateText);
-				if (t1 != null)
-					t1.setText(s);
-				TextView t2 = (TextView) v.findViewById(R.id.MarkText);
-				if (t2 != null) {
-					int mark = items.get(position).getMark();
-					t2.setText(Integer.toString(mark));
-					if (items.get(position).getType())
-						v.setBackgroundResource(R.drawable.klausur);
-					else
-						v.setBackgroundResource(0);
+				String s = DateFormat.getDateInstance().format(d);
+				if (s != null) {
+					TextView t1 = (TextView) v.findViewById(R.id.DateText);
+					if (t1 != null)
+						t1.setText(s);
+					TextView t2 = (TextView) v.findViewById(R.id.MarkText);
+					if (t2 != null) {
+						t2.setText(Integer.toString(mark));
+						if (current.getType())
+							v.setBackgroundResource(R.drawable.klausur);
+						else
+							v.setBackgroundResource(0);
+					}
 				}
+			} else if (id == -1) {
+				LayoutInflater l = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				v = l.inflate(R.layout.divider, null);
+				TextView t = (TextView) v.findViewById(R.id.dividerText);
+				if (t != null)
+					t.setText("Semester " + String.valueOf(mark - 15));
 			}
-
-			Log.v(items.get(position).getDate().toString(),
-					String.valueOf(items.get(position).getType()));
 			return v;
 		}
 

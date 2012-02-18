@@ -44,6 +44,7 @@ public class SubjectPickerLand extends TabActivity {
 		Intent intent;
 		tabHost.setCurrentTab(0);
 		tabHost.clearAllTabs();
+		tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
 		Cursor c = base.query("subjects", new String[]{"short", "name"}, null, null, null, null, "short");
 		if (c.getCount() > 0){

@@ -58,6 +58,13 @@ public class PreferencesActivity extends ListActivity {
 					String[] items = {"alle Semester", "aktuelles Semester"};
 					AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
 					builder.setTitle("Zeitraum");
+					builder.setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
+						
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+							
+						}
+					});
 					builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int which) {
