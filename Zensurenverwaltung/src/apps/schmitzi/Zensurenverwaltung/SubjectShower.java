@@ -148,13 +148,13 @@ public class SubjectShower extends Activity {
 		Intent in;
 		switch (item.getItemId()) {
 		case R.id.AddTestMenuBtn:
-			in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_TEST");
+			in = new Intent(this, AddTestActivity.class);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.semester", current);
 			startActivity(in);
 			return true;
 		case R.id.MainLandAddSubject:
-			in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+			in = new Intent(this, AddSubjectActivity.class);
 			in.addCategory(Intent.CATEGORY_DEFAULT);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode",
 					MODE_ADD);
@@ -169,11 +169,11 @@ public class SubjectShower extends Activity {
 			finish();
 			return true;
 		case R.id.PrefLandButton:
-			in = new Intent("apps.schmitzi.Zensurenverwaltung.PREFERENCES");
+			in = new Intent(this, PreferencesActivity.class);
 			startActivity(in);
 			return true;
 		case R.id.EditMenuButton:
-			in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+			in = new Intent(this, AddSubjectActivity.class);
 			in.addCategory(Intent.CATEGORY_DEFAULT);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode",

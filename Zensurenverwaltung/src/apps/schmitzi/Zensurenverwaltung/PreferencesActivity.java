@@ -50,7 +50,7 @@ public class PreferencesActivity extends ListActivity {
 					long id) {
 				switch(position){
 				case 0:
-					Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SEMESTER");
+					Intent in = new Intent(PreferencesActivity.this, SemesterActivity.class);
 					in.addCategory(Intent.CATEGORY_DEFAULT);
 					startActivity(in);
 					break;

@@ -66,7 +66,7 @@ public class SubjectPicker extends Activity {
 		if (display.getRotation() == Surface.ROTATION_0)
 			initializeListView();
 		else
-			startActivity(new Intent("apps.schmitzi.Zensurenverwaltung.CHANGE_TO_LANDSCAPE"));
+			startActivity(new Intent(this, SubjectPickerLand.class));
 	}
 
 	private void initializeListView() {
@@ -90,7 +90,7 @@ public class SubjectPicker extends Activity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					String subject = ((TextView) arg1.findViewById(R.id.SubjectText)).getText().toString();
-					Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SHOW_SUBJECT");
+					Intent in = new Intent(SubjectPicker.this, SubjectShower.class);
 					in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", subject);
 					startActivity(in);
 				}
@@ -179,7 +179,7 @@ public class SubjectPicker extends Activity {
 			return true;
 		case R.id.editItem:
 			TextView t = (TextView) info.targetView.findViewById(R.id.SubjectText);
-			Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+			Intent in = new Intent(this, AddSubjectActivity.class);
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.subject", t.getText().toString());
 			in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_EDIT);
 			startActivity(in);
@@ -202,13 +202,13 @@ public class SubjectPicker extends Activity {
 		Intent in;
 		switch(item.getItemId()) {
 			case R.id.AddSubjectMenuButton:
-				in = new Intent("apps.schmitzi.Zensurenverwaltung.ADD_SUBJECT");
+				in = new Intent(this, AddSubjectActivity.class);
 				in.addCategory(Intent.CATEGORY_DEFAULT);
 				in.putExtra("apps.schmitzi.Zensurenverwaltung.requestCode", MODE_ADD);
 				startActivity(in);
 				return true;
 			case R.id.PreferencesMenuButton:
-				in = new Intent("apps.schmitzi.Zensurenverwaltung.PREFERENCES");
+				in = new Intent(this, PreferencesActivity.class);
 				in.addCategory(Intent.CATEGORY_DEFAULT);
 				startActivity(in);
 				return true;

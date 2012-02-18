@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -50,7 +49,7 @@ public class SubjectPickerLand extends TabActivity {
 		if (c.getCount() > 0){
 			c.moveToFirst();
 			do{
-				intent = new Intent("apps.schmitzi.Zensurenverwaltung.SHOW_SUBJECT");
+				intent = new Intent(this, SubjectShower.class);
 				intent.putExtra("apps.schmitzi.Zensurenverwaltung.subject", c.getString(1));
 				spec = tabHost.newTabSpec(c.getString(0)).setIndicator(createTabView(tabHost.getContext(),c.getString(0))).setContent(intent);
 				Log.v("Zensurenverwaltung", String.valueOf(spec == null));
