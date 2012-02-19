@@ -44,7 +44,7 @@ public class SubjectPicker extends Activity {
         super.onCreate(savedInstanceState);
         prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
         if (!prefs.contains("Semester 1")){
-        	Intent in = new Intent("apps.schmitzi.Zensurenverwaltung.SEMESTER");
+        	Intent in = new Intent(this, SemesterActivity.class);
         	in.addCategory(Intent.CATEGORY_DEFAULT);
         	startActivity(in);
         }

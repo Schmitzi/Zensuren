@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="apps.schmitzi.Zensurenverwaltung"
       android:versionCode="16"
-      android:versionName="1.5.1">
+      android:versionName="1.6">
     <uses-sdk android:minSdkVersion="8" />
 
     <application  android:label="Zensuren" android:debuggable="false" android:theme = "@android:style/Theme.Light" android:icon = "@drawable/icon">
