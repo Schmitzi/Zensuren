@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+			  android:layout_width = "fill_parent"
+			  android:layout_height = "fill_parent">
+		<ScrollView android:layout_width = "fill_parent"
+					android:layout_height = "fill_parent">
+			<RelativeLayout android:layout_height = "fill_parent"
+							android:layout_width = "fill_parent">
+				<TextView android:id = "@+id/DateText"
+						  android:layout_alignLeft = "@+id/DateButton"
+						  android:text = "Datum:"
+						  android:layout_height = "wrap_content"
+						  android:layout_width = "wrap_content"
+						  android:layout_marginTop = "2mm"
+						  android:layout_alignParentTop = "true" />
+				
+				<Button android:id = "@+id/DateButton"
+						android:layout_width = "fill_parent"
+						android:layout_height = "wrap_content"
+						android:layout_marginBottom = "3mm"
+						android:layout_below = "@+id/DateText"
+						android:gravity = "center_vertical" />
+		
+				<TextView android:id = "@+id/MarkText"
+						  android:layout_below = "@+id/DateButton"
+						  android:layout_alignLeft = "@+id/spnMark"
+						  android:layout_width = "wrap_content"
+						  android:layout_height = "wrap_content"
+						  android:text = "Punkte:" />
+						  
+				<Button  android:id = "@+id/btnMark"
+						 android:layout_below = "@+id/MarkText" 
+						 android:layout_width = "fill_parent"
+						 android:layout_height = "wrap_content"
+						 android:layout_marginBottom = "3mm"/>
+						 
+				<CheckBox android:id = "@+id/KlausurCheckBox"
+			  			  android:text = "Klausur"
+			  			  android:layout_width = "fill_parent"
+			 			  android:layout_height = "wrap_content"
+						  android:layout_below = "@+id/spnMark" />
+			</RelativeLayout>
+		</ScrollView>
+		<LinearLayout android:background = "#999999" android:orientation = "horizontal"
+					  android:layout_height = "wrap_content"
+					  android:layout_width = "fill_parent"
+					  android:layout_alignParentBottom = "true">
+			<Button android:id = "@+id/AddTestButton"
+					android:layout_width = "0dip"
+					android:layout_height = "wrap_content"
+					android:layout_weight = "1"
+					android:text = "Speichern" 
+					android:layout_marginTop = "5dip"/>
+			<Button android:id = "@+id/CancelTestButton"
+					android:layout_width = "0dip"
+					android:layout_height = "wrap_content"
+					android:layout_weight = "1"
+					android:text = "Abbrechen"
+					android:layout_marginTop = "5dip" />
+		</LinearLayout>
+</RelativeLayout>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="apps.schmitzi.Zensurenverwaltung"
-      android:versionCode="16"
+      android:versionCode="17"
       android:versionName="1.6">
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8" 
+              android:targetSdkVersion="11"/>
 
-    <application  android:label="Zensuren" android:debuggable="false" android:theme = "@android:style/Theme.Light" android:icon = "@drawable/icon">
+    <application  android:label="Zensuren" android:debuggable="false" android:theme = "@android:style/Theme.Holo.Light" android:icon = "@drawable/icon">
         <activity android:name=".SubjectPicker"
                   android:label="Zensuren">
                   <intent-filter>

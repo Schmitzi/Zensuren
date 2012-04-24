@@ -2,8 +2,10 @@
 <menu xmlns:android = "http://schemas.android.com/apk/res/android">
 	<item android:id = "@+id/AddSubjectMenuButton"
 		  android:title = "Neues Fach"
-		  android:icon = "@android:drawable/ic_menu_add" />
+		  android:icon = "@android:drawable/ic_menu_add"
+		  android:showAsAction="ifRoom" />
 	<item android:id = "@+id/PreferencesMenuButton"
 		  android:title = "Einstellungen"
-		  android:icon = "@android:drawable/ic_menu_preferences" />
+		  android:icon = "@android:drawable/ic_menu_preferences"
+		  android:showAsAction = "ifRoom" />
 </menu>

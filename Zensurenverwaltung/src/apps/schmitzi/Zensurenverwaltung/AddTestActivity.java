@@ -17,7 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.Spinner;
+import android.widget.NumberPicker;
 
 public class AddTestActivity extends Activity {
 
@@ -33,7 +33,7 @@ public class AddTestActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.add_test);
+		setContentView(R.layout.add_test_ics);
 		prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
 		semester[0] = Date.valueOf(prefs.getString("Semester 1", ""));
 		semester[1] = Date.valueOf(prefs.getString("Semester 2", ""));
@@ -49,6 +49,7 @@ public class AddTestActivity extends Activity {
 		date = new Date(tempDate.getYear(), tempDate.getMonth(),
 				tempDate.getDate());
 		initializebtnDate();
+		initbtnMark();
 		base = openOrCreateDatabase(SubjectPicker.DATABASE, MODE_PRIVATE, null);
 		final CheckBox chkKlausur = (CheckBox) findViewById(R.id.KlausurCheckBox);
 		Cursor c = base.query("subjects", new String[] { "type" }, "name = ?",
@@ -60,8 +61,8 @@ public class AddTestActivity extends Activity {
 		Button btnOK = (Button) findViewById(R.id.AddTestButton);
 		btnOK.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Spinner spnMark = (Spinner) findViewById(R.id.spnMark);
-				mark = spnMark.getSelectedItemPosition();
+			//	Spinner spnMark = (Spinner) findViewById(R.id.spnMark);
+			//	mark = spnMark.getSelectedItemPosition();
 				boolean klausur;
 				klausur = chkKlausur.isChecked();
 				ContentValues values = new ContentValues();
@@ -96,6 +97,22 @@ public class AddTestActivity extends Activity {
 				finish();
 			}
 		});
+	}
+
+	private void initbtnMark() {
+		Button btnMark = (Button) findViewById(R.id.btnMark);
+		btnMark.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				Dialog dlg = new Dialog(AddTestActivity.this);
+				dlg.setContentView(R.layout.mark_dialog);
+				NumberPicker pick =  (NumberPicker)dlg.findViewById(R.id.pickMark);
+				pick.setMaxValue(15);
+				dlg.setTitle("Zensur einstellen");
+				dlg.show();
+			}
+		});
+		
 	}
 
 	private void initializebtnDate() {
