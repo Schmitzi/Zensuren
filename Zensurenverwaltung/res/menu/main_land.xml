@@ -2,22 +2,17 @@
 <menu xmlns:android = "http://schemas.android.com/apk/res/android">
 	<item android:id = "@+id/MainLandAddSubject"
 		  android:icon = "@android:drawable/ic_menu_add"
-		  android:title = "Neues Fach"
-		  android:showAsAction="ifRoom"/>
+		  android:title = "Neues Fach"/>
 	<item android:id = "@+id/AddTestMenuBtn"
 		  android:icon = "@android:drawable/ic_menu_add"
-		  android:title = "Neue Zensur"
-		  android:showAsAction="ifRoom"/>
+		  android:title = "Neue Zensuren"/>
 	<item android:id = "@+id/DeleteMenuBtn"
 		  android:icon = "@android:drawable/ic_menu_delete"
-		  android:title = "Fach löschen"
-		  android:showAsAction="ifRoom"/>
+		  android:title = "Fach löschen"/>
 	<item android:id ="@+id/EditMenuButton"
 		  android:icon = "@android:drawable/ic_menu_edit"
-		  android:title = "Fach bearbeiten"
-		  android:showAsAction="ifRoom"/>
+		  android:title = "Fach bearbeiten"/>
 	<item android:id = "@+id/PrefLandButton"
 		  android:icon = "@android:drawable/ic_menu_preferences"
-		  android:title = "Einstellungen"
-		  android:showAsAction="ifRoom"/>
+		  android:title = "Einstellungen"/>
 </menu>

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -133,8 +134,9 @@ public class SQLConnection {
 	public Subject getSubject(int id) {
 		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
 				MODE_PRIVATE, null);
-		Cursor c = db.query(SUBJECT_TABLE, null, "rowid = ?",
-				new String[] { String.valueOf(id) }, null, null, null);
+		Cursor c = db.query(SUBJECT_TABLE, new String[] { "rowid", "*" },
+				"rowid = ?", new String[] { String.valueOf(id) }, null, null,
+				null);
 		db.close();
 		if (c.getCount() == 0)
 			return null;
@@ -177,6 +179,7 @@ public class SQLConnection {
 				MODE_PRIVATE, null);
 		String[] whereArgs = new String[] { String.valueOf(id) };
 		db.delete(SUBJECT_TABLE, "rowid = ?", whereArgs);
+		db.delete(MARK_TABLE, "subject = ?", whereArgs);
 		db.close();
 	}
 
@@ -243,6 +246,52 @@ public class SQLConnection {
 	}
 
 	/**
+	 * Ruft die Zensur mit der gegebenen rowid ab
+	 * 
+	 * @param id
+	 *            Die rowid der Zensur
+	 * @return Ein Mark-Objekt, das die Zensur darstellt
+	 */
+	public Mark getMark(int id) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		String[] selectionArgs = new String[] { String.valueOf(id) };
+		Cursor c = db.query(MARK_TABLE, new String[] { "rowid", "*" },
+				"rowid = ?", selectionArgs, null, null, null);
+		db.close();
+		if (c.getCount() == 0)
+			return null;
+		c.moveToFirst();
+		return new Mark(Date.valueOf(c.getString(1)), c.getInt(2), c.getInt(3),
+				c.getInt(0));
+	}
+
+	/**
+	 * Ruft alle Zensuren eines Fachs ab
+	 * 
+	 * @param subjectId
+	 *            Die rowid des Fachs, dessen Zensuren abgerufen werden
+	 * @return Eine Auflistung aller Zensuren des Fachs
+	 */
+	public ArrayList<Mark> getMarks(int subjectId) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		String[] selectionArgs = new String[] { String.valueOf(subjectId) };
+		Cursor c = db.query(MARK_TABLE, new String[] { "rowid", "*" },
+				"subject = ?", selectionArgs, null, null, null);
+		db.close();
+		ArrayList<Mark> result = new ArrayList<Mark>();
+		if (c.getCount() == 0)
+			return result;
+		c.moveToFirst();
+		do {
+			result.add(new Mark(Date.valueOf(c.getString(1)), c.getInt(2), c
+					.getInt(3), c.getInt(0)));
+		} while (c.moveToNext());
+		return result;
+	}
+
+	/**
 	 * Fügt ein Semester hinzu
 	 * 
 	 * @param beginning
@@ -275,22 +324,232 @@ public class SQLConnection {
 		db.close();
 	}
 
-	
 	/**
 	 * Ruft eine sortierte Liste aller Semester ab
+	 * 
 	 * @return Die Liste aller Semester
 	 */
-	public ArrayList<Date> getSemesters(){
-		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
-		Cursor c = db.query(SEMESTER_TABLE, null, null, null, null, null, null);
+	public ArrayList<Semester> getSemesters() {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		Cursor c = db.query(SEMESTER_TABLE, new String[] { "rowid", "*" },
+				null, null, null, null, "beginning");
 		db.close();
-		ArrayList<Date> result = new ArrayList<Date>();
-		if (c.getCount() == 0) return result;
+		ArrayList<Semester> result = new ArrayList<Semester>();
+		if (c.getCount() == 0)
+			return result;
 		c.moveToFirst();
-		do{
-			result.add(Date.valueOf(c.getString(0)));
+		do {
+			result.add(new Semester(c.getInt(0), Date.valueOf(c.getString(1))));
 		} while (c.moveToNext());
-		Collections.sort(result);
 		return result;
+	}
+
+	/**
+	 * Fügt einen neuen Zensurentyp hinzu
+	 * 
+	 * @param name
+	 *            Der Name des Zensurentyps
+	 * @param highlightColor
+	 *            Die Zahl, die die Farbe der Umrandung des Eintrags darstellt
+	 */
+	public void addMarkType(String name, int highlightColor) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		ContentValues values = new ContentValues();
+		values.put("name", name);
+		values.put("highlightColor", highlightColor);
+		db.insert(MARK_TYPE_TABLE, null, values);
+		db.close();
+
+	}
+
+	/**
+	 * Bearbeitet einen Zensurentyp
+	 * 
+	 * @param id
+	 *            Die rowid des Zensurentyps
+	 * @param name
+	 *            Der neue Name des Zensurentyps
+	 * @param highlightColor
+	 *            Die Umrandungsfarbe des Zensurentyps
+	 */
+	public void editMarkType(int id, String name, int highlightColor) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		ContentValues values = new ContentValues();
+		values.put("name", name);
+		values.put("highlightColor", highlightColor);
+		String[] whereArgs = new String[] { String.valueOf(id) };
+		db.update(MARK_TYPE_TABLE, values, "rowid = ?", whereArgs);
+		db.close();
+	}
+
+	/**
+	 * Löscht einen Zensurentyp
+	 * 
+	 * @param id
+	 *            Die rowid des Zensurentyps
+	 */
+	public void deleteMarkType(int id) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		String[] whereArgs = new String[] { String.valueOf(id) };
+		db.delete(MARK_TYPE_TABLE, "rowid = ?", whereArgs);
+		db.close();
+	}
+
+	public MarkType getMarkType(int id) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		String[] whereArgs = new String[] { String.valueOf(id) };
+		Cursor c = db.query(MARK_TYPE_TABLE, null, "rowid = ?", whereArgs,
+				null, null, null);
+		db.close();
+		if (c.getCount() == 0)
+			return null;
+		c.moveToFirst();
+		return new MarkType(c.getInt(1), c.getString(0), id);
+	}
+
+	public ArrayList<MarkType> getMarkTypes() {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		Cursor c = db.query(MARK_TYPE_TABLE, new String[] { "rowid", "*" },
+				null, null, null, null, null);
+		db.close();
+		ArrayList<MarkType> result = new ArrayList<MarkType>();
+		if (c.getCount() == 0)
+			return result;
+		c.moveToFirst();
+		do {
+			result.add(new MarkType(c.getInt(2), c.getString(1), c.getInt(0)));
+		} while (c.moveToNext());
+		return result;
+	}
+
+	public void addSubjectType(SubjectType type) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		ContentValues values = new ContentValues();
+		values.put("name", type.getName());
+		db.insert(SUBJECT_TYPE_TABLE, null, values);
+		Cursor c = db.query(SUBJECT_TYPE_TABLE, new String[] { "rowid" },
+				"name = ?", new String[] { type.getName() }, null, null, null);
+		c.moveToFirst();
+		int id = c.getInt(0);
+		for (int i = 0; i < type.getConfigurations().size(); i++) {
+			Configuration configuration = type.getConfigurations().get(i);
+			for (int j = 0; j < configuration.getMarkTypes().size(); j++) {
+				MarkType mark = configuration.getMarkTypes().get(j);
+				values = new ContentValues();
+				values.put("subjectTypeId", id);
+				values.put("markTypeId", mark.getId());
+				values.put("weight", configuration.getWeight(mark));
+				values.put("beginningSemester", type.getSemesters().get(i));
+				db.insert(TYPE_RELATION_TABLE, null, values);
+			}
+		}
+		db.close();
+	}
+
+	public void editSubjectType(SubjectType type) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		ContentValues values = new ContentValues();
+		values.put("name", type.getName());
+		db.update(SUBJECT_TYPE_TABLE, values, "rowid = ?",
+				new String[] { String.valueOf(type.getId()) });
+		for (int i = 0; i < type.getConfigurations().size(); i++) {
+			Configuration configuration = type.getConfigurations().get(i);
+			for (int j = 0; j < configuration.getMarkTypes().size(); j++) {
+				MarkType mark = configuration.getMarkTypes().get(j);
+				values = new ContentValues();
+				values.put("subjectTypeId", type.getId());
+				values.put("markTypeId", mark.getId());
+				values.put("weight", configuration.getWeight(mark));
+				values.put("beginningSemester", type.getSemesters().get(i));
+				db.update(TYPE_RELATION_TABLE, values, "subjectTypeId = ?",
+						new String[] { String.valueOf(type.getId()) });
+			}
+		}
+		db.close();
+	}
+
+	/**
+	 * Ruft den Kurstyp mit der gegeben rowid ab
+	 * @param id Die rowid des Kurstyps
+	 * @return Das entprechende SubjectType-Objekt
+	 */
+	public SubjectType getSubjectType(int id) {
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE,
+				MODE_PRIVATE, null);
+		SubjectType result = new SubjectType();
+		Cursor c = db.query(SUBJECT_TYPE_TABLE, new String[] { "name" },
+				"rowid = ?", new String[] { String.valueOf(id) }, null, null,
+				null);
+		if (c.getCount() == 0){
+			db.close();
+			return null;
+		}
+		c.moveToFirst();
+		result.setName(c.getString(0));
+		result.setId(id);
+		c = db.query(TYPE_RELATION_TABLE, new String[] { "markTypeId",
+				"weight", "beginningSemester" }, "subjectTypeId = ?",
+				new String[] { String.valueOf(id) }, null, null,
+				"beginningSemester");
+		db.close();
+		if (c.getCount() == 0)
+			return result;
+		c.moveToFirst();
+		int currentSemester = 1;
+		Configuration newConfiguration = new Configuration();
+		do {
+			if (c.getInt(2) > currentSemester) {
+				if (newConfiguration.getMarkTypes().size() != 0) {
+					result.addConfig(currentSemester, newConfiguration);
+					newConfiguration = new Configuration();
+				}
+				currentSemester++;
+			}
+			newConfiguration.addMarkType(getMarkType(c.getInt(0)), c.getInt(1));
+		} while (c.moveToNext());
+		return result;
+	}
+	
+	public ArrayList<SubjectType> getSubjectTypes(){
+		boolean gotAll = false;
+		ArrayList<SubjectType> result = new ArrayList<SubjectType>();
+		for (int i = 1; !gotAll; i++){
+			SubjectType nextType = getSubjectType(i);
+			if (nextType == null)
+				gotAll = true;
+			else
+				result.add(nextType);
+		}
+		return result;
+	}
+	
+	public void deleteSubjectType(int id){
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
+		String[] whereArgs = new String[] {String.valueOf(id)};
+		db.delete(SUBJECT_TYPE_TABLE, "rowid = ?", whereArgs);
+		db.delete(TYPE_RELATION_TABLE, "subjectTypeId = ?", whereArgs);
+		db.close();
+	}
+	
+	/**
+	 * Richtet alle Tabellen der Datenbank ein.
+	 */
+	public void createDatabase(){
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
+		db.execSQL("CREATE TABLE " + SUBJECT_TABLE+" (name VARCHAR(30), short VARCHAR(10), type INTEGER, mean DECIMAL(4,2) )");
+		db.execSQL("CREATE TABLE " + MARK_TABLE + " (date DATE, mark INTEGER, type INTEGER, subjectId INTEGER )");
+		db.execSQL("CREATE TABLE " + SEMESTER_TABLE + " (beginning DATE)");
+		db.execSQL("CREATE TABLE " + MARK_TYPE_TABLE + " (name VARCHAR(30), highlightColor INTEGER )");
+		db.execSQL("CREATE TABLE " + SUBJECT_TYPE_TABLE + "(name VARCHAR(30) )");
+		db.execSQL("CREATE TABLE " + TYPE_RELATION_TABLE + " (subjectTypeId INTEGER, markTypeId INTEGER, weight INTEGER, beginningSemester INTEGER )");
+		db.close();
 	}
 }

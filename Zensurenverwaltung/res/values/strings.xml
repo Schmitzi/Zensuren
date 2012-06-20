@@ -33,4 +33,21 @@
     	<item>Beginn der Semester ändern</item>
     	<item>Den angezeigten Zeitraum ändern (berechnet alle Durchschnitte neu)</item>
     </string-array>
+    <string name="OK">OK</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="preferences">Einstellungen</string>
+    <string name="setup_text">Willkommen zu Zensuren 2.0! Bevor es los geht, musst du noch einiges einrichten.</string>
+    <string name="setup">Einrichtung</string>
+    <string name="update">Update</string>
+    <string name="update_text">Es wurde eine alte Version von Zensuren gefunden. Sollen die alten Einstellungen übernommen werden? </string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="onlyMarks">nur Zensuren</string>
+    <string name="copying_settings">Übernehme Einstellungen</string>
+    <string name="wait">Bitte warten …</string>
+    <string name="mark_type_text">Hier kannst du neue Zensurentypen hinzufügen und sie bearbeiten.</string>
+    <string name="add">Hinzufügen</string>
+    <string name="name">Name</string>
+    <string name="highlight">Hervorhebung</string>
 </resources>

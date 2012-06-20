@@ -32,27 +32,19 @@ import android.widget.TextView;
 
 public class SubjectPicker extends Activity {
     /** Called when the activity is first created. */
-	
-	public static SQLiteDatabase marksBase;
-	public static final String DATABASE = "Zensurenverwaltung_Data";
 	private SubjectAdapter adapter;
+	private SQLConnection connection = new SQLConnection(this);
 	SharedPreferences prefs;
 	final int MODE_ADD = 0, MODE_EDIT = 1;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
-        if (!prefs.contains("Semester 1")){
-        	Intent in = new Intent(this, SemesterActivity.class);
-        	in.addCategory(Intent.CATEGORY_DEFAULT);
-        	startActivity(in);
+        prefs = getSharedPreferences(SQLConnection.DATABASE, MODE_PRIVATE);
+        if (prefs.getString("Version", "0") != "2.0"){
+        	
         }
         setContentView(R.layout.main);
-        marksBase = this.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
-        marksBase.execSQL("CREATE TABLE IF NOT EXISTS subjects ( _id INTEGER AUTO_INCREMENT PRIMARY KEY," +
-        				  "name varchar(100) NOT NULL, short varchar(10) NOT NULL, mean NUMERIC(4,2), type INTEGER );");
-        marksBase.close();
         SharedPreferences prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
         if (!prefs.contains("Semester 1")){
         	

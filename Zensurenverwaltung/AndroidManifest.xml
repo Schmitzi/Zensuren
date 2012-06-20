@@ -20,7 +20,9 @@
         <activity android:name = ".AddTestActivity" />
 		<activity android:name = ".NoSubjectsActivity" android:label = "Keine Fächer" />
 		<activity android:name = ".SubjectPickerLand" android:label = "Zensuren" />	
-		<activity android:name = ".PreferencesActivity" android:label = "Einstellungen" />
+		<activity android:name = ".PreferencesActivity" android:label = "@string/preferences" />
 		<activity android:name = ".SemesterActivity" android:label = "Semester einstellen" />
+		<activity android:name = ".SetupActivity" />
+		<activity android:name = ".OldInstallationActivity" />
     </application>
 </manifest>
