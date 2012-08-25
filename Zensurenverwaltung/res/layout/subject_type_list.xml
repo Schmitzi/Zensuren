@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    
+    <TextView
+        android:id="@+id/txtHint"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="8dp"
+        android:text="@string/subject_type_text" />
+    
+    <View android:id="@+id/spacerView"
+        android:background="#000000"
+        android:layout_below="@+id/txtHint"
+        android:layout_height="5dp"
+        android:layout_width="fill_parent" />
+    <LinearLayout android:id="@+id/footer" 
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_height="48dp"
+        android:layout_width="fill_parent"
+        android:background="#AAAAAA">
+        
+        <Button android:id="@+id/btnOK"
+            	android:text="@string/OK"
+            	android:layout_width="0dp"
+            	android:layout_height="wrap_content"
+            	android:layout_weight="1"
+            	android:layout_marginTop="4dp" />
+        <Button android:id="@+id/btnCancel"
+            	android:text="@string/cancel"
+            	android:layout_width="0dp"
+            	android:layout_height="wrap_content"
+            	android:layout_weight="1"
+            	android:layout_marginTop="4dp"/>
+    </LinearLayout>
+    
+    
+    <ListView android:id = "@+id/lstSubjectTypes"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/spacerView"
+        android:layout_above="@+id/footer"
+        android:layout_height="0dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" />
+</RelativeLayout>

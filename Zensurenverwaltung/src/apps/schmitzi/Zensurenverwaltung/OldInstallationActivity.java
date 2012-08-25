@@ -26,6 +26,7 @@ public class OldInstallationActivity extends Activity {
 		Button btnYes = (Button)findViewById(R.id.btnOK);
 		btnYes.setOnClickListener(new OnClickListener() {
 			
+			@SuppressWarnings("deprecation")
 			public void onClick(View v) {
 				UpdateTask task = new UpdateTask();
 				task.execute((Void)null);
@@ -96,6 +97,7 @@ public class OldInstallationActivity extends Activity {
 			return null;
 		}
 		
+		@SuppressWarnings("deprecation")
 		@Override
 		protected void onPostExecute(Void value){
 			dismissDialog(0);

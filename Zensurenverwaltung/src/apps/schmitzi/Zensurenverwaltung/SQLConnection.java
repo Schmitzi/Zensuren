@@ -25,7 +25,7 @@ public class SQLConnection {
 			MARK_TYPE_TABLE = "MARK_TYPE", MARK_TABLE = "MARK",
 			TYPE_RELATION_TABLE = "SUBJT_USES_MARKT",
 			SEMESTER_TABLE = "SEMESTER";
-	public static final int MODE_PRIVATE = Activity.MODE_PRIVATE;
+	public static final int MODE_PRIVATE = Activity.MODE_PRIVATE, MODE_SETUP = 0, MODE_EDIT = 1;
 	private Activity activity;
 
 	/**
@@ -344,9 +344,19 @@ public class SQLConnection {
 		} while (c.moveToNext());
 		return result;
 	}
+	
+	/**
+	 * Löscht das Semester mit der angegbenen ID
+	 * @param id Die ID des zu löschenden Semesters
+	 */
+	public void deleteSemester(int id){
+		SQLiteDatabase db = activity.openOrCreateDatabase(DATABASE, MODE_PRIVATE, null);
+		db.delete(SEMESTER_TABLE, "rowid = ?", new String[]{String.valueOf(id)});
+		db.close();
+	}
 
 	/**
-	 * FÃ¼gt einen neuen Zensurentyp hinzu
+	 * Fügt einen neuen Zensurentyp hinzu
 	 * 
 	 * @param name
 	 *            Der Name des Zensurentyps

@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class SubjectType {
 
 	private ArrayList<Configuration> configs;
-	private ArrayList<Integer> beginningSemsters;
+	private ArrayList<Integer> beginningSemesters;
 	private String name;
 	private int id;
 	
 	public Configuration getConfiguration(int semester){
 		int index = 0;
-		for (int i = 0; i < beginningSemsters.size(); i++){
-			if(beginningSemsters.get(i + 1) > semester && beginningSemsters.get(i) <= semester)
+		for (int i = 0; i < beginningSemesters.size(); i++){
+			if(beginningSemesters.get(i + 1) > semester && beginningSemesters.get(i) <= semester)
 				index = i;
 		}
 		return configs.get(index);
@@ -23,12 +23,12 @@ public class SubjectType {
 	}
 	
 	public ArrayList<Integer> getSemesters(){
-		return beginningSemsters;
+		return beginningSemesters;
 	}
 	
 	public void addConfig(int beginningSemester, Configuration newConfiguration){
 		configs.add(newConfiguration);
-		beginningSemsters.add(beginningSemester);
+		beginningSemesters.add(beginningSemester);
 	}
 	
 	public void setName(String value){
@@ -45,5 +45,12 @@ public class SubjectType {
 	
 	public int getId(){
 		return id;
+	}
+	
+	public SubjectType(){
+		id = 0;
+		configs = new ArrayList<Configuration>();
+		beginningSemesters = new ArrayList<Integer>();
+		name = new String();
 	}
 }

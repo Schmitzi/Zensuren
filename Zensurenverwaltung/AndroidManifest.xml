@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="apps.schmitzi.Zensurenverwaltung"
-      android:versionCode="17"
-      android:versionName="1.6">
-    <uses-sdk android:minSdkVersion="8" 
-              android:targetSdkVersion="11"/>
+	package="apps.schmitzi.Zensurenverwaltung" android:versionCode="17"
+	android:versionName="1.6">
 
-    <application  android:label="Zensuren" android:debuggable="false" android:theme = "@android:style/Theme.Holo.Light" android:icon = "@drawable/icon">
-        <activity android:name=".SubjectPicker"
-                  android:label="Zensuren">
-                  <intent-filter>
-                      <action android:name = "android.intent.action.MAIN"/>
-                      <category android:name = "android.intent.category.LAUNCHER" />
-                  </intent-filter>
-        </activity>
-        <activity android:name = ".AddSubjectActivity"
-        		  android:label = "Ein neues Fach hinzufügen"/>
-        <activity android:name = ".SubjectShower" />
-        <activity android:name = ".AddTestActivity" />
-		<activity android:name = ".NoSubjectsActivity" android:label = "Keine Fächer" />
-		<activity android:name = ".SubjectPickerLand" android:label = "Zensuren" />	
-		<activity android:name = ".PreferencesActivity" android:label = "@string/preferences" />
-		<activity android:name = ".SemesterActivity" android:label = "Semester einstellen" />
-		<activity android:name = ".SetupActivity" />
-		<activity android:name = ".OldInstallationActivity" />
-    </application>
+	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="11" />
+
+	<application android:icon="@drawable/icon"
+		android:label="Zensuren" android:theme="@android:style/Theme.Holo.Light">
+		<activity android:name=".SubjectPicker" android:label="Zensuren">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".AddSubjectActivity" android:label="Ein neues Fach hinzufügen" />
+		<activity android:name=".SubjectShower" />
+		<activity android:name=".AddTestActivity" />
+		<activity android:name=".NoSubjectsActivity" android:label="Keine Fächer" />
+		<activity android:name=".SubjectPickerLand" android:label="Zensuren" />
+		<activity android:name=".PreferencesActivity" android:label="@string/preferences" />
+		<activity android:name=".SemesterActivity" android:label="Semester einstellen" />
+		<activity android:name=".SetupActivity" />
+		<activity android:name=".OldInstallationActivity" />
+		<activity android:name=".MarkTypeActivity" />
+		<activity android:name=".IntervalActivity" />
+		<activity android:name=".MarkBordersActivity" />
+		<activity android:name=".SubjectTypeActivity" />
+		<activity android:name=".SubjectTypeListActivity" />
+	</application>
+
 </manifest>

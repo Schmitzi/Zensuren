@@ -30,9 +30,20 @@ public class SetupActivity extends Activity {
 				if(preferences.contains("Semester 1")){
 					intent = new Intent(SetupActivity.this, OldInstallationActivity.class);
 					startActivityForResult(intent, 0);
+				} else{
+					intent = new Intent(SetupActivity.this, IntervalActivity.class);
+					intent.putExtra("mode", SQLConnection.MODE_SETUP);
+					startActivityForResult(intent, 0);
 				}
 				
 			}
 		});
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		if (resultCode == RESULT_OK){
+			setResult(RESULT_OK);
+			finish();
+		}
 	}
 }

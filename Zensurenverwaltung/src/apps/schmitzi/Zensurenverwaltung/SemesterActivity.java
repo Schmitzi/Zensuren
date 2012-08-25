@@ -1,16 +1,16 @@
 package apps.schmitzi.Zensurenverwaltung;
 
 import java.sql.Date;
-import java.text.DateFormat;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,111 +24,152 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class SemesterActivity extends Activity {
-	
-	String[] semester = new String[4];
-	SharedPreferences prefs;
-	
+
+	int oldCount;
+	SemesterAdapter adapter;
+	int mode;
 	@Override
-	public void onCreate(Bundle savedInstanceState){
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.semester_activity);
-		prefs = getSharedPreferences("Zensuren", MODE_PRIVATE);
-		if (prefs.contains("Semester 1")){
-			for (int i = 0; i < 4; i++){
-				semester[i] = DateFormat.getDateInstance().format(Date.valueOf(prefs.getString("Semester " + String.valueOf(i + 1), "0")));
-			}
-		} else {
-			for (int i = 0; i < 4; i++){
-				semester[i] = DateFormat.getDateInstance().format(new java.util.Date());
-			}
-		}
+		mode = getIntent().getIntExtra("mode", SQLConnection.MODE_EDIT);
 		ListView lv = (ListView) findViewById(R.id.lvSemester);
-		lv.setAdapter(new PrefAdapter(this, R.layout.pref_item,
-							new String[] {"Semester 1", "Semester 2", "Semester 3", "Semester 4"}, semester));
-		lv.setOnItemClickListener(new OnItemClickListener(){
+		lv.setAdapter(adapter);
+		InitializerTask t = new InitializerTask();
+		t.execute((Void)null);
+		lv.setOnItemClickListener(new OnItemClickListener() {
 
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if(position == parent.getChildCount() - 1){
+					adapter.insert(new Semester(0, adapter.getItem(position - 1).getBeginning()), position);
+					adapter.notifyDataSetChanged();
+				}
 				showDialog(position);
 			}
-			
+
 		});
-		
+
 		Button btnCancel = (Button) findViewById(R.id.btnSemCancel);
-		if (prefs.contains("Semester 1")){
-			btnCancel.setOnClickListener(new OnClickListener(){
+		btnCancel.setOnClickListener(new OnClickListener() {
 
-				public void onClick(View v) {
-					finish();
+			public void onClick(View v) {
+				finish();
 
-				}
-			
-			});
-		} else {
-			btnCancel.setEnabled(false);
-		}
+			}
+
+		});
 		
 		Button btnOK = (Button) findViewById(R.id.btnSemOK);
-		btnOK.setOnClickListener(new OnClickListener(){
-			public void onClick(View v){
-				SharedPreferences.Editor ed = prefs.edit();
-				for (int i = 0; i < 4; i++){
-					Date d = new Date(Integer.valueOf(semester[i].substring(6, 10)) - 1900,
-									  Integer.valueOf(semester[i].substring(3, 5)) - 1, Integer.valueOf(semester[i].substring(0, 2)));
-					ed.putString("Semester " + String.valueOf(i + 1) , d.toString());
-				}
-				ed.commit();
-				finish();
+		btnOK.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				SaveTask task = new SaveTask();
+				task.execute((Void)null);
 			}
 		});
+		
+		if(mode == SQLConnection.MODE_SETUP){
+			btnOK.setText(R.string.next);
+			btnCancel.setText(R.string.back);
+		}
 	}
 
-	public Dialog onCreateDialog(final int id){
-		OnDateSetListener callback = new OnDateSetListener(){
+	public Dialog onCreateDialog(final int id) {
+		OnDateSetListener callback = new OnDateSetListener() {
 
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
-				semester[id] = DateFormat.getDateInstance().format(new Date(year - 1900, monthOfYear, dayOfMonth));
-				ListView lv = (ListView)findViewById(R.id.lvSemester);
-				lv.setAdapter(new PrefAdapter(SemesterActivity.this, R.layout.pref_item,
-						new String[] {"Semester 1", "Semester 2", "Semester 3", "Semester 4"}, semester));
-				
-			}			
+				adapter.getItem(id).setBeginning(new Date(year, monthOfYear, dayOfMonth));
+				adapter.notifyDataSetChanged();
+			}
 		};
-		return new DatePickerDialog(SemesterActivity.this, callback,Integer.valueOf(semester[id].substring(6, 10)),
-				Integer.valueOf(semester[id].substring(3, 5)) - 1, Integer.valueOf(semester[id].substring(0, 2)));
+		Date d = adapter.getItem(id).getBeginning();
+		
+		return new DatePickerDialog(SemesterActivity.this, callback,
+				d.getYear(), d.getMonth(), d.getDate()); 
 	}
-	
-	public class PrefAdapter extends ArrayAdapter<String> {
 
-		String[] names, descriptions;
-		
-		public PrefAdapter(Context context, int textViewResourceId, String[] names, String[] descriptions) {
-			super(context, textViewResourceId, names);
-			this.names = names;
-			this.descriptions = descriptions;
+	public class SemesterAdapter extends ArrayAdapter<Semester> {
+
+		public SemesterAdapter(Context context, int textViewResourceId,
+				List<Semester> objects) {
+			super(context, textViewResourceId, objects);
 		}
-		
+
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent){
+		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
-			if(v==null) {
-				 LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				 v = inf.inflate(R.layout.pref_item, null);
-			 }
-			Log.v("Zensuren1", names[position]);
-			String s = names[position];
-			if (s != null){
+			LayoutInflater inf = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			if (position == getCount() - 1) {
+				v = inf.inflate(R.layout.add_item, null);
+				return v;
+			}
+			v = inf.inflate(R.layout.pref_item, null);
+			String s = String.valueOf(position + 1);
+			if (s != null) {
 				TextView t1 = (TextView) v.findViewById(R.id.PrefTitle);
-				if(t1 != null)
+				if (t1 != null)
 					t1.setText(s);
 				TextView t2 = (TextView) v.findViewById(R.id.PrefDescription);
 				if (t2 != null)
-					t2.setText(descriptions[position]);
+					t2.setText(getItem(position).getBeginning().toString());
 			}
 			return v;
 		}
 
 	}
+	
+	public class SaveTask extends AsyncTask<Void, Void, Void>{
 
+		@Override
+		protected Void doInBackground(Void... params) {
+			SQLConnection connection = new SQLConnection(SemesterActivity.this);
+			ListView lv = (ListView)findViewById(R.id.lvSemester);
+			SemesterAdapter ad = (SemesterAdapter)lv.getAdapter();
+			int newCount = ad.getCount();
+			if (newCount < oldCount){
+				for (int i = 0; i < newCount; i++){
+					connection.editSemester(i + 1, ad.getItem(i).getBeginning());
+				}
+				for (int i = newCount; i < oldCount; i++){
+					connection.deleteSemester(i + 1);
+				}
+			} else {
+				for (int i = 0; i < oldCount; i++){
+					connection.editSemester(i + 1, ad.getItem(i).getBeginning());
+				}
+				for (int i = oldCount; i < newCount; i++){
+					connection.addSemester(ad.getItem(i).getBeginning());
+				}
+			}
+			return null;
+		}
+		protected void onPostExecute(Void result){
+			if (mode == SQLConnection.MODE_SETUP){
+				Intent in = new Intent(SemesterActivity.this, MarkBordersActivity.class);
+				in.putExtra("mode", mode);
+				startActivityForResult(in, 0);
+			} else
+				finish();
+		}
+	}
+	
+	public class InitializerTask extends AsyncTask<Void, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			SQLConnection connection = new SQLConnection(SemesterActivity.this);
+			adapter.addAll(connection.getSemesters());
+			adapter.add(new Semester(0, new Date(3000, 1,1)));
+			adapter.notifyDataSetChanged();
+			return null;
+		}
+		
+	}
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			setResult(RESULT_OK);
+			finish();
+		}
+	}
 }

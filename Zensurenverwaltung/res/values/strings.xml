@@ -38,7 +38,7 @@
     <string name="cancel">Abbrechen</string>
     <string name="preferences">Einstellungen</string>
     <string name="setup_text">Willkommen zu Zensuren 2.0! Bevor es los geht, musst du noch einiges einrichten.</string>
-    <string name="setup">Einrichtung</string>
+    <string name="setup">Setup</string>
     <string name="update">Update</string>
     <string name="update_text">Es wurde eine alte Version von Zensuren gefunden. Sollen die alten Einstellungen übernommen werden? </string>
     <string name="yes">Ja</string>
@@ -47,7 +47,25 @@
     <string name="copying_settings">Übernehme Einstellungen</string>
     <string name="wait">Bitte warten …</string>
     <string name="mark_type_text">Hier kannst du neue Zensurentypen hinzufügen und sie bearbeiten.</string>
+    <string name="subject_type_text">Hier kannst du neue Kurstypen hinzufügen und sie bearbeiten.</string>
     <string name="add">Hinzufügen</string>
     <string name="name">Name</string>
     <string name="highlight">Hervorhebung</string>
+    <string name="next">Weiter</string>
+    <string name="back">Zurück</string>
+    <string name="delete">Löschen</string>
+    <string name="saving">Speichert</string>
+    <string name="years">Jahre</string>
+    <string name="semesters">Semester</string>
+    <string name="interval_text">Werden die Zensuren in Jahren oder in Semestern abgerechnet?</string>
+    <string name="min_mark">schlechteste Zensur</string>
+    <string name="max_mark">beste Zensur</string>
+    <string name="border_text">Wie lauten die schlechteste und die beste mögliche Zensur?</string>
+    <string name="mark_type">Zensurentyp</string>
+    <string name="weight">Gewichtung</string>
+    <string name="begins_semester">Beginnt in Semester</string>
+    <string name="configuration">Konfiguration</string>
+    <string name="double_conf">Uneindeutige Einstellungen</string>
+    <string name="double_conf_text">Für einen Zeitraum wurde mehr als eine Konfiguration eingestellt.</string>
+    <string name="timeframe">verwendeter Zeitraum</string>
 </resources>

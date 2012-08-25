@@ -25,7 +25,8 @@
         	  android:layout_height="wrap_content"
         	  android:layout_width = "fill_parent"
         	  android:textSize="16dp"
-        	  android:text="@string/setup_text" />
+        	  android:text="@string/setup_text"
+        	  android:gravity="center" />
     <LinearLayout android:id="@+id/ButtonBar"
         		  android:background="#AAAAAA"
         		  android:orientation="horizontal"
